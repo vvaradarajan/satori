@@ -1,0 +1,6 @@
+1. bower_components: copy the bower.json and do a 'bower install'
+2. copy your components (or maybe put them in bower)
+3. copy any dependencies (i.e. the images)
+Test by 'polymer serve'
+
+Using via python:

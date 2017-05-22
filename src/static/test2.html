@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Chart test</title>
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+ <link rel="import" href="/bower_components/polymer/polymer.html">
+ <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+ <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
+ <link rel="import" href="/bower_components/iron-icons/iron-icons.html">  
+ <link rel="import" href="/bower_components/iron-collapse/iron-collapse.html">
+ <link rel="import" href="/bower_components/paper-item/paper-item.html">
+
+ <link rel="import" href="/bower_components/iron-icons/communication-icons.html">
+ <link rel="import" href="/bower_components/iron-icons/hardware-icons.html">
+ <link rel="import" href="/bower_components/iron-icons/social-icons.html">
+ <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+ <link rel="import" href="/bower_components/paper-button/paper-button.html">
+ <link rel="import" href="/bower_components/paper-styles/color.html">
+ <link rel="import" href="/bower_components/paper-styles/typography.html">
+ <link rel="import" href="/bower_components/paper-card/paper-card.html">
+ 
+ <link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="/bower_components/app-layout/app-box/app-box.html">
+<link rel="import" href="/bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="/bower_components/google-chart/google-chart.html">
+<dom-module id="bar-chart">
+<style>
+google-chart {
+  height: 300px;
+  width: 50em;
+}
+</style>
+<template>
+<!-- <google-chart -->
+<!--   type='pie' -->
+<!--   options='{"title": "Distribution of days in 2001Q1"}' -->
+<!--   cols='[{"label":"Month", "type":"string"}, {"label":"Days", "type":"number"}]' -->
+<!--   rows='[["Jan", 31],["Feb", 28],["Mar", 31]]'> -->
+<!-- </google-chart> -->
+<google-chart id="myChart"
+  type='pie'
+  options='{"title": "Distribution of days in 2001Q1"}'
+  data='[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]'>
+</google-chart>
+</template>
+<script>
+Polymer({
+	is: 'bar-chart'
+	,ready: function () {
+		console.log(this.$.myChart.data);
+		this.$.myChart.options.title="Gazebo";
+		var data = JSON.parse('[["Month", "Days"], ["Jhn", 31], ["Feb", 28], ["Mar", 31]]')
+		this.$.myChart.data=data;
+ console.log("Hello");
+	}
+});
+</script>
+</dom-module>
+</head>
+<body unresolved>
+<bar-chart></bar-chart>
+</body>
+</html>

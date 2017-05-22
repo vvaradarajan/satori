@@ -1,0 +1,145 @@
+<!doctype html>
+<head>
+  <title>paper-card demo</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<!--   <link rel="import" href="/bower_components/iron-collapse/iron-collapse.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-icons/iron-icons.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-icons/communication-icons.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-icons/hardware-icons.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-icons/social-icons.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-button/paper-button.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-styles/color.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-styles/typography.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-card/paper-card.html"> -->
+
+<dom-module id="pap-bar">
+<template>
+<style>
+      paper-menu {
+          width: 100px;background-color: #00897B;
+        }
+      app-header {
+        background-color: #00897B;
+        color: #fff;
+        height:40px;
+      }
+      app-toolbar{
+      height:40px
+      }
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+      paper-menu {background-color: #f5fcf4;}
+      paper-item{
+        color:#6d706c;
+        --paper-item-selected:{color:red;}
+      }
+      app-drawer paper-item {}
+      .white{
+        color:white;
+      }
+/*       app-drawer-layout app-drawer { */
+/*   		z-index: -1 !important; */
+/* 	  } */
+</style>
+<app-header reveals>
+  <app-toolbar>
+  	<paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button>
+  	<div main-title>
+    Concurrent job execution Charts
+    </div>
+    <paper-icon-button icon="home"></paper-icon-button>
+	<paper-item class="white">vsvconsult@gmail.com</paper-item>
+  </app-toolbar>
+ </app-header>
+  <app-drawer id="drawer" closed swipe-open style="z-index:1">
+    <paper-item id="showDemo">Demo</paper-item>
+    <paper-item id="showAlgorithm">Algorithm</paper-item>
+    <paper-item id="showAbout">About</paper-item>
+ </app-drawer>
+ <div id="content">
+   <div class="showDemo">
+      <h3>Paper-cards can contain advanced content</h3>
+            <paper-card image="demo/donuts.png" alt="Donuts">
+              <div class="card-content">
+                <div class="cafe-header">Cafe Basilico
+                  <div class="cafe-location cafe-light">
+                    <iron-icon icon="communication:location-on"></iron-icon>
+                    <span>250ft</span>
+                  </div>
+                </div>
+                <div class="cafe-rating">
+                  <iron-icon class="star" icon="star"></iron-icon>
+                  <iron-icon class="star" icon="star"></iron-icon>
+                  <iron-icon class="star" icon="star"></iron-icon>
+                  <iron-icon class="star" icon="star"></iron-icon>
+                  <iron-icon class="star" icon="star"></iron-icon>
+                </div>
+                <p>$ Italian, Cafe</p>
+                <p class="cafe-light">Small plates, salads &amp; sandwiches in an intimate setting with 12 indoor seats plus patio seating.</p>
+              </div>
+              <div class="card-actions">
+                <p>Tonight's availability</p>
+                <div class="horizontal justified">
+                  <paper-icon-button icon="icons:event"></paper-icon-button>
+                  <paper-button>5:30PM</paper-button>
+                  <paper-button>7:30PM</paper-button>
+                  <paper-button>9:00PM</paper-button>
+                </div>
+                <paper-button class="cafe-reserve">Reserve</paper-button>
+              </div>
+            </paper-card>
+     </div>
+        <div class="showAlgorithm">x+y=z</div>
+        <div class="showAbout">About</div>
+    </template>
+<script>
+Polymer({
+	is: 'pap-bar'
+	,listeners: {
+		'vv':'menuToggle'
+		,'drawer.tap':'menuSelected' //tap on menu item will bubble here
+	}
+	,ready: function() {
+		//make all div's within content display=none
+		this.querySelectorAll('div#content>div').forEach(
+				function (e) {
+					e.style.display='None'
+				});
+		console.log(this.is + 'is ready');}
+	,menuToggle: function () {
+		this.$.drawer.close();
+	}
+	,menuSelected: function (e) {
+		this.$.drawer.close();
+		this.contentProducer.menuItem=e.srcElement.id;
+		this.contentProducer.show(this);
+	}
+	,contentProducer: {
+		menuItem: null
+		,currentMenuItem:null
+		,show: function(domRef) {
+			if (this.currentMenuItem != null) {
+				domRef.querySelector('div#content>div.'+this.currentMenuItem).style.display='None';
+			}
+			this.currentMenuItem=this.menuItem;
+			domRef.querySelector('div#content>div.'+this.menuItem).style.display='block';
+			console.log("This is a demo");
+		}
+	}
+});
+</script>
+</dom-module>
+</head>
+<body unresolved>
+<!--     <pap-bar></pap-bar> -->
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Chart test</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js">
+</script>
+<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+ <link rel="import" href="/bower_components/polymer/polymer.html">
+ <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+ <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
+ <link rel="import" href="/bower_components/iron-icons/iron-icons.html">  
+ <link rel="import" href="/bower_components/iron-collapse/iron-collapse.html">
+ <link rel="import" href="/bower_components/paper-item/paper-item.html">
+
+ <link rel="import" href="/bower_components/iron-icons/communication-icons.html">
+ <link rel="import" href="/bower_components/iron-icons/hardware-icons.html">
+ <link rel="import" href="/bower_components/iron-icons/social-icons.html">
+ <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+ <link rel="import" href="/bower_components/paper-button/paper-button.html">
+ <link rel="import" href="/bower_components/paper-styles/color.html">
+ <link rel="import" href="/bower_components/paper-styles/typography.html">
+ <link rel="import" href="/bower_components/paper-card/paper-card.html">
+ 
+ <link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="/bower_components/app-layout/app-box/app-box.html">
+<link rel="import" href="/bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<script>
+function drawChart() {
+ console.log("Hello");
+ var ctx = document.getElementById("myChart");
+ var myChart = new Chart(ctx, {
+     type: 'bar',
+     data: {
+         labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+         datasets: [{
+             label: '# of Votes',
+             data: [12, 19, 3, 5, 2, 3],
+             backgroundColor: [
+                 'rgba(255, 99, 132, 0.2)',
+                 'rgba(54, 162, 235, 0.2)',
+                 'rgba(255, 206, 86, 0.2)',
+                 'rgba(75, 192, 192, 0.2)',
+                 'rgba(153, 102, 255, 0.2)',
+                 'rgba(255, 159, 64, 0.2)'
+             ],
+             borderColor: [
+                 'rgba(255,99,132,1)',
+                 'rgba(54, 162, 235, 1)',
+                 'rgba(255, 206, 86, 1)',
+                 'rgba(75, 192, 192, 1)',
+                 'rgba(153, 102, 255, 1)',
+                 'rgba(255, 159, 64, 1)'
+             ],
+             borderWidth: 1
+         }]
+     },
+     options: {
+         scales: {
+             yAxes: [{
+                 ticks: {
+                     beginAtZero:true
+                 }
+             }]
+         }
+     }
+ });
+};
+</script>
+</head>
+<body onload="drawChart()">
+<canvas id="myChart" width="400" height="400"></canvas>
+</body>
+</html>
