@@ -51,8 +51,10 @@ def send_satori(menuItem):
         return json.dumps(chartDataArr)
             
         #return '[["Time", "count"], ["0", 5], ["1", 6], ["2", 7]]'
-    msg='Did you get it from satori: {0}'.format(menuItem)
-    return "{'Message':'"+msg+"'}"
+    #All others return a default message
+    defMsg={}
+    defMsg['Message']='Content development in Progress for {0}.  Try ChartPanel instead..'.format(menuItem)
+    return json.dumps(defMsg)
 
 
 if __name__ == "__main__":
