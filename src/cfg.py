@@ -8,32 +8,32 @@ cfg={'active':['Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #['F
      ,'chDetails': {
          'bitcoin':{'pDu':{
                 "action":"rtm/subscribe","id":"20","body":{"channel":"bitcoin-transactions"}},'classNM':'default.default',
-                "charts":{"msgRate":{"Title":"Bitcoin msgs in last 5 mins"}}
+                "charts":{"msgRate":{"Title":"Bitcoin msgs 10 second msg count"}}
          }
          ,'meetup':{'pDu':{
                 "action":"rtm/subscribe","id":"20","body":{"channel":"Meetup-RSVP"}},'classNM':'default.default',
-                "charts":{"msgRate":{"Title":"Meetup msgs in last 5 mins"}}     
+                "charts":{"msgRate":{"Title":"Meetup msgs 10 second msg count"}}     
          }
          ,'github':{'pDu':{
                 "action":"rtm/subscribe","id":"20","body":{"channel":"github-events"}},'classNM':'default.default',
-                "charts":{"msgRate":{"Title":"Github events in last 5 mins"}}     
+                "charts":{"msgRate":{"Title":"Github events 10 second msg count"}}     
          }
          ,'Flying-A320s':{'pDu':{
                 "action":"rtm/subscribe","id":"20"
                 ,"body":{"channel":"air-traffic"
                          ,"filter":'select * where aircraft = "A320" and speed>200'
                                                     }},'classNM':'default.default',
-                "charts":{"msgRate":{"Title":"A320 air-traffic events in last 5 mins"}}     
+                "charts":{"msgRate":{"Title":"A320 air-traffic events 10 second msg count"}}     
          }
          ,'Bart':{'pDu':{
                 "action":"rtm/subscribe","id":"20","body":{"channel":"bartarrivalsschedule"}},'classNM':'default.default',
-                "charts":{"msgRate":{"Title":"BART events in last 5 mins"}}     
+                "charts":{"msgRate":{"Title":"BART events 10 second msg count"}}     
          }
         ,'twitter':{'pDu':{
                 "action":"rtm/subscribe","id":"20"
                 ,"body":{"channel":"Twitter-statuses-sample"
                                                     }},'classNM':'default.default',
-                "charts":{"msgRate":{"Title":"Twitter sensitive events in last 5 mins"}}     
+                "charts":{"msgRate":{"Title":"Twitter events 10 second msg count"}}     
          }
                                 
     }
