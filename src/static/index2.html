@@ -121,6 +121,10 @@ var gb={
 	 }
    ,ready: function() {
 	 this.$.contentObject.setContentSource.call(this.$.contentObject,this.contentSource);
+	 //also start off the chartPanel
+	 var dr=this.$.contentObject.$.drawer;
+	 var eventClick = new Event('tap');
+	 dr.dispatchEvent(eventClick);
 	 console.log('Gazebo');
    }
  });

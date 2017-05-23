@@ -178,7 +178,11 @@ Polymer({
 	}
 	,menuSelected: function (e) {
 		this.$.drawer.close();
-		this.contentProvider.menuItem=e.srcElement.id;
+		var menuItem=e.srcElement.id;
+		if (menuItem=='drawer') {
+			menuItem='ChartPanel'; //default selection (triggered by event from index2.html)
+		}
+		this.contentProvider.menuItem=menuItem;
 		this.contentProvider.show(this,this.contentSource);
 	}
 	,defaultContentSource: {
