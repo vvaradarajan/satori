@@ -4,6 +4,7 @@ Created on May 21, 2017
 @author: acer
 '''
 cfg={'active':['Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #['Flying-A320s','meetup','github','bitcoin']
+     ,'settings':{'refreshInterval':6000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':60}
      ,'chDetails': {
          'bitcoin':{'pDu':{
                 "action":"rtm/subscribe","id":"20","body":{"channel":"bitcoin-transactions"}},'classNM':'default.default',
@@ -37,7 +38,6 @@ cfg={'active':['Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #['F
                                 
     }
      ,'engines':{} #placeholder to store the processing engines (created from classNM) during run
-     ,'settings':{'refreshInterval':6000}
 }
 if __name__ == '__main__':
     pass

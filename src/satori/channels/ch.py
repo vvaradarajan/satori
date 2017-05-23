@@ -9,6 +9,7 @@ import sys
 import inspect
 from pprint import pprint
 from src.cfg import cfg
+from asyncio.tasks import sleep
 class ch:
     endpoint = "wss://open-data.api.satori.com"
     appkey = "E0Acebca1fbB549AaBeA5D9bec2aacb8"
@@ -56,7 +57,31 @@ class ch:
         cfg['engines'][nM]=self.processEngine
         self.showMessage=self.processEngine.processMsg
         self.stopCondition=self.processEngine.stopCondition
-        self.processEngine.maxMsgCount=maxMsgCount
+
+import threading
+import time
+class timerForSlotShift (threading.Thread):
+#at specified time interval shifts slots (should lock slots while shifting..not done yet)
+    def __init__(self,intervalSeconds,totalTime):
+        super().__init__()
+        self.intervalSeconds=intervalSeconds #name of the channel (defined in bitcoin2.ch)
+        self.timeLeft=totalTime
+    def slotShift(self):
+        #urlString = endpoint + '?appkey='+appkey
+        time.sleep(self.intervalSeconds)
+        self.timeLeft -=self.intervalSeconds
+        for channel in cfg['active']:
+            engine=cfg['engines'][channel]
+            engine.slots.shiftLeft()
+            if self.timeLeft<0:
+                engine.stop=True
+        print("Timer woke up!")
+    def run(self):
+        while True:
+            if self.timeLeft<0:
+                print("Timer stopped!")
+                break
+            self.slotShift()
 
 if __name__ == "__main__":
     ch.loadChClassesInCfg()

@@ -1,7 +1,7 @@
 from flask import Flask,get_template_attribute,send_from_directory
 from src.satori.websock import readWebsock
 #from src.satori.bitcoin2Old import meetup
-from src.satori.channels.ch import ch
+from src.satori.channels.ch import ch, timerForSlotShift
 import json
 from pprint import pprint
 from src.cfg import cfg
@@ -59,7 +59,11 @@ if __name__ == "__main__":
     #ch.loadChClassesInCfg()
     rwsArr=[]
     for chNM in cfg['active']:
-        rws=readWebsock(chNM,100)
+        rws=readWebsock(chNM,cfg['settings']['noOfMsgs'])
         rwsArr.append(rws)
         rws.start()
-    app.run()
+    # start timer
+    tss=timerForSlotShift(cfg['settings']['slotShiftTimeSecs'],cfg['settings']['totalRunTime']) # start the timer thread
+    tss.start()
+    
+    app.run(host='0.0.0.0') #0.0.0.0 allows external connections .. otherwise flash restricts it to localhost
