@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+<head>
+  <title>paper-card demo</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+<!--   <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script> -->
+
+<!--   <link rel="import" href="/bower_components/iron-collapse/iron-collapse.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-icons/iron-icons.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-icons/communication-icons.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-icons/hardware-icons.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-icons/social-icons.html"> -->
+<!--   <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-button/paper-button.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-styles/color.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-styles/typography.html"> -->
+<!--   <link rel="import" href="/bower_components/paper-card/paper-card.html"> -->
+
+<dom-module id="pap-bar">
+<style>
+google-chart {
+  height: 300px;
+  width: 300px;
+}
+</style>
+<template>
+<style>
+      paper-menu {
+          width: 100px;background-color: #00897B;
+        }
+      app-header {
+        background-color: #00897B;
+        color: #fff;
+        height:40px;
+      }
+      app-toolbar{
+      height:40px
+      }
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+      paper-menu {background-color: #f5fcf4;}
+      paper-item{
+        color:#6d706c;
+        --paper-item-selected:{color:red;}
+      }
+      app-drawer paper-item {}
+      .white{
+        color:white;
+      }
+/*       app-drawer-layout app-drawer { */
+/*   		z-index: -1 !important; */
+/* 	  } */
+</style>
+<app-header reveals>
+  <app-toolbar>
+  	<paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button>
+  	<div main-title>
+    Concurrent job execution Charts
+    </div>
+    <paper-icon-button icon="home"></paper-icon-button>
+	<paper-item class="white">vsvconsult@gmail.com</paper-item>
+  </app-toolbar>
+ </app-header>
+  <app-drawer id="drawer" closed swipe-open style="z-index:1">
+  <!-- These entries should come from a menu table, along with refresh rate and possibly other parameters -->
+    <paper-item id="Demo">Demo</paper-item>
+    <paper-item id="Chart">Chart</paper-item>
+    <paper-item id="ChartPanel">ChartPanel</paper-item>
+    <paper-item id="Algorithm">Algorithm</paper-item>
+    <paper-item id="About">About</paper-item>
+ </app-drawer>
+ <div id="content">
+    <div class="showChartPanel">
+<!--    	<google-chart class='chart0'  style="float:left;" -->
+<!-- 	 type='bar' -->
+<!-- 	 options='{"title": "Bitcoin message Rate"}' -->
+<!-- 	 data='[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]'> -->
+<!-- 	</google-chart> -->
+<!-- 	<google-chart class='chart1' style="float:left;" -->
+<!-- 	 type='bar' -->
+<!-- 	 options='{"title": "Message Rate per Minute","hAxis": {"title": "Count", "minValue": 0}}' -->
+<!-- 	 data='[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]'> -->
+<!-- 	</google-chart> -->
+<!-- 	<google-chart class='chart2' style="float:left;" -->
+<!-- 	 type='bar' -->
+<!-- 	 options='{"title": "Message Rate per Minute","hAxis": {"title": "Count", "minValue": 0}}' -->
+<!-- 	 data='[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]'> -->
+<!-- 	</google-chart> -->
+   </div>
+   <div class="showChart">
+   	<google-chart
+	 type='bar'
+	 options='{"title": "Message Rate per Minute","hAxis": {"title": "Count", "minValue": 0}}'
+	 data='[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]'>
+	</google-chart>
+   </div>
+   <div class="showDemo">
+      <h3>Paper-cards can contain advanced content</h3>
+            <paper-card image="../../images/donuts.png" alt="Donuts">
+              <div class="card-content">
+                <div class="cafe-header">Cafe Basilico
+                  <div class="cafe-location cafe-light">
+                    <iron-icon icon="communication:location-on"></iron-icon>
+                    <span>250ft</span>
+                  </div>
+                </div>
+                <div class="cafe-rating">
+                  <iron-icon class="star" icon="star"></iron-icon>
+                  <iron-icon class="star" icon="star"></iron-icon>
+                  <iron-icon class="star" icon="star"></iron-icon>
+                  <iron-icon class="star" icon="star"></iron-icon>
+                  <iron-icon class="star" icon="star"></iron-icon>
+                </div>
+                <p>$ Italian, Cafe</p>
+                <p class="cafe-light">Small plates, salads &amp; sandwiches in an intimate setting with 12 indoor seats plus patio seating.</p>
+              </div>
+              <div class="card-actions">
+                <p>Tonight's availability</p>
+                <div class="horizontal justified">
+                  <paper-icon-button icon="icons:event"></paper-icon-button>
+                  <paper-button>5:30PM</paper-button>
+                  <paper-button>7:30PM</paper-button>
+                  <paper-button>9:00PM</paper-button>
+                </div>
+                <paper-button class="cafe-reserve">Reserve</paper-button>
+              </div>
+            </paper-card>
+     </div>
+     <div class="showAlgorithm">
+		<paper-card>buldiga</paper-card>
+	 </div>
+     <div class="showAbout">About</div>
+    </template>
+<script>
+Polymer({
+	is: 'pap-bar'
+	,properties: {
+		refreshinterval: {type: Number, value: 6000} //refreshInterval for charts (cal also be set as attribute of this component)
+	}
+	,contentSource: null //function that returns a promise (this enables the ability to wait for content before display)
+	,listeners: {
+		'vv':'menuToggle'
+		,'drawer.tap':'menuSelected' //tap on menu item will bubble here
+	}
+	,ready: async function() {
+		//make all div's within content display=none
+		this.querySelectorAll('div#content>div').forEach(
+				function (e) {
+					e.style.display='None'
+				});
+		this.setContentSource(this.defaultContentSource);
+		//insert google chart html into div
+		var chartPanelDiv = this.querySelector('div.showChartPanel')
+		var chartHtml=''
+		var colors=["#389090", "#f47e7d", "#85d045", "#fb8335", "#81c0c5"]
+		var settings = await gb.ajaxGetPromise('/settings/all'); //note requires the gb (global object or common code)
+		for (var i=0;i<settings.noOfPanelCharts;i++) {
+			chartHtml = chartHtml + '<google-chart class="chart'+i+'"  style="float:left;"'
+			+' type="bar"'
+			+' options=\'{"title": "Bitcoin message Rate","colors": ["'+colors[i % 5]+'"],"hAxis": {"title": "Count", "minValue": 0}}\''
+			+' data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
+			+'	</google-chart>\n'
+		}
+		chartPanelDiv.innerHTML =chartHtml;
+		this.contentProvider.refreshInterval=settings.refreshinterval;
+		console.log(this.is + 'is ready');}
+	,menuToggle: function () {
+		this.$.drawer.close();
+	}
+	,setContentSource: function (cs) {
+		this.contentSource = cs;
+	}
+	,menuSelected: function (e) {
+		this.$.drawer.close();
+		this.contentProvider.menuItem=e.srcElement.id;
+		this.contentProvider.show(this,this.contentSource);
+	}
+	,defaultContentSource: {
+		getContent: function(mi) {
+			//provide dumb content for menuItem mi
+			return new Promise(function(resolve,reject){
+				resolve('<paper-card>default content for: ' + mi + ' </paper-card>');
+			})
+		}
+	}
+	,contentProvider: {
+		menuItem: null
+		,previousMenuItem:null
+		,refreshInterval:null
+		,intervalTimer:null
+		,periodicRefresh: function(domRef,contentSource,timeInterval) {
+			this1=this;
+			this.intervalTimer = setInterval(function(){ this1.show(domRef,contentSource); }, timeInterval);
+		}
+		,refreshTable: {
+			'Chart': 3000
+			,'ChartPanel':6000
+		}
+		,isRefresh(menuItem,domRef,contentSource) {
+			//checks: 1. if this is just a refresh => continue
+			//2. If new refresh => set it up
+			//3. if menuItem change => reset refresh and set it up for new menuItem
+			if (this.previousMenuItem == this.menuItem && this.intervalTimer != null) {
+				//just a refresh
+				return;
+			}
+			//erase any old timer
+			if (this.intervalTimer != null) {clearInterval(this.intervalTimer); this.intervalTimer == null;}
+			for(var item in this.refreshTable) {
+				if (this.menuItem == item) {
+					//set autorefresh timer
+					this.periodicRefresh(domRef,contentSource,this.refreshTable[item]);
+					return;
+				}
+			}
+		}
+		,show: async function(domRef,contentSource) {
+			//Decide if this is just a refresh
+			//erase the old content
+			if (this.previousMenuItem != null) {
+				domRef.querySelector('div#content>div.show'+this.previousMenuItem).style.display='None';
+			};
+// 			//erase any old timer
+// 			if (this.intervalTimer != null) {clearInterval(this.intervalTimer); this.intervalTimer == null;}
+			//get the new content
+			if (this.menuItem==null) return;
+			var nc = await contentSource.getContent(this.menuItem);
+			
+			if (this.menuItem != null) {
+				if (this.menuItem == 'Chart') {
+					//process chart => the returned value is data for the chart
+					var gc = domRef.querySelector('div#content>div.show'+this.menuItem+'>google-chart')
+					gc.data= nc.data;
+					gc.options.title=nc.title;
+					//set autorefresh timer
+// 					this.periodicRefresh(domRef,contentSource);
+						//JSON.parse('[["Month", "Days"], ["Jyn", 31], ["Feb", 28], ["Mar", 31]]')
+					
+				} else if (this.menuItem == 'ChartPanel') {
+					//process chart => the returned value is data for the chart
+					var noOfCharts = domRef.querySelectorAll('div#content>div.show'+this.menuItem+'>google-chart').length;
+					for (var i=0;i<noOfCharts;i++) {
+					   var gc = domRef.querySelector('div#content>div.show'+this.menuItem+'>google-chart.chart'+i);
+					   gc.data= nc[i].data;
+					   gc.options.title=nc[i].title;
+					};
+				} else {
+					//default processing of content => show papercard with content
+					domRef.querySelector('div#content>div.show'+this.menuItem).innerHTML=nc;
+					
+				};
+			}
+			domRef.querySelector('div#content>div.show'+this.menuItem).style.display='block';
+			this.isRefresh(this.menuItem,domRef,contentSource); //user this.previousMenuItem - must be called before changing it
+			this.previousMenuItem=this.menuItem;
+			console.log("This is a demo");
+		}
+	}
+});
+</script>
+</dom-module>
+</head>
+<body unresolved>
+<!--     <pap-bar></pap-bar> -->
+</body>
+</html>
