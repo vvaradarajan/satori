@@ -3,6 +3,7 @@ from src.satori.websock import readWebsock
 #from src.satori.bitcoin2Old import meetup
 from src.satori.channels.ch import ch, timerForSlotShift
 import json
+import markdown
 from pprint import pprint
 from src.cfg import cfg
 app = Flask(__name__,static_url_path='/static')
@@ -19,6 +20,9 @@ def helloTpt():
 @app.route('/bower_components/<path:path>')
 def send_bower(path):
     return send_from_directory('../bower_components', path)
+@app.route('/my_components/<path:path>')
+def send_my_components(path):
+    return send_from_directory('my_components', path)
 
 @app.route('/images/<path:path>')
 def send_images(path):
@@ -49,6 +53,15 @@ def send_satori(menuItem):
         for chNM in cfg['active']:
             chartDataArr.append(cfg['engines'][chNM].slots.getSlotsJson(chNM))
         return json.dumps(chartDataArr)
+
+    if menuItem=='Algorithm':
+        f=open('static/Algorithm.md')
+        md = f.read()
+        extensions = ['extra', 'smarty']
+        html = markdown.markdown(md, extensions=extensions, output_format='html5')
+        defMsg={}
+        defMsg['Message']=html
+        return json.dumps(defMsg)
             
         #return '[["Time", "count"], ["0", 5], ["1", 6], ["2", 7]]'
     #All others return a default message
