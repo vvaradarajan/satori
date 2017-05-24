@@ -6,7 +6,10 @@ import json
 import markdown
 from pprint import pprint
 from src.cfg import cfg
+import os
 app = Flask(__name__,static_url_path='/static')
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
+APP_STATIC = os.path.join(APP_ROOT, 'static')
  
 @app.route("/a")
 def hello():
@@ -55,8 +58,9 @@ def send_satori(menuItem):
         return json.dumps(chartDataArr)
 
     if menuItem=='Algorithm':
-        f=open('static/Algorithm.md')
-        md = f.read()
+        md=None
+        with open(os.path.join(APP_STATIC, 'Algorithm.md')) as f:
+            md = f.read()
         extensions = ['extra', 'smarty']
         html = markdown.markdown(md, extensions=extensions, output_format='html5')
         defMsg={}
