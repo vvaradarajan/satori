@@ -4,3 +4,6 @@ Installation instructions on Linux:
 3. PYTHONPATH should be set to point to the satori directory (or just export PYTHONPATH=.
 4. cd to satori directory
 5. nohup python3.6 src/runMe.py > /tmp/junk.out &
+
+
+NLSTFZ
