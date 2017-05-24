@@ -26,5 +26,5 @@ The threads and events are:
  - Websocket thread: Waits for data on websocket and reads websocket and processes to shared memory
  - Rest API webserver thread: Waits for a request from UI and processes the request accessing the information in the shared memorry.
  - Timer thread: Waits for an interval of time, and processes the shared memory data to time intervals (used by the UI to chart the data).
- <a href="http://45.55.0.197:5000/static/index2.html">Satori Traffic</a>
+
 
