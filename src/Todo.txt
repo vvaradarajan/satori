@@ -1,6 +1,6 @@
 Installation instructions on Linux:
 1. use github and clone the satori in a good directory
 2. The linux box must have python3.x, pip3.x, bower installed(follow instructions on the internet)
-3. PYTHONPATH should be set to point to the satori/src directory
-4. cd to satori/src directory
-5. python3.6 runMe.py
+3. PYTHONPATH should be set to point to the satori directory (or just export PYTHONPATH=.
+4. cd to satori directory
+5. nohup python3.6 src/runMe.py > /tmp/junk.out &
