@@ -39,7 +39,7 @@ cfg={'active':['exchange','Flying-A320s','meetup','github'] #['Flying-A320s','me
                 "action":"rtm/subscribe","id":"20"
                 ,"body":{"channel":"exchange-rates"
                                                     }},'classNM':'bitcoin.exchange',
-                "charts":{"msgRate":{"Title":"Exchange events 10 second msg count"},"chartType":'column'}     
+                "charts":{"msgRate":{"Title":"Dollar exchange rate updated every 30 seconds"},"chartType":'column'}     
          }                                            
     }
      ,'engines':{} #placeholder to store the processing engines (created from classNM) during run
