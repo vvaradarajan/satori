@@ -3,11 +3,11 @@ Created on May 21, 2017
 
 @author: acer
 '''
-cfg={'active':['Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #['Flying-A320s','meetup','github','bitcoin']
-     ,'settings':{'refreshInterval':6000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':600}
+cfg={'active':['exchange','Flying-A320s','meetup','github'] #['Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
+     ,'settings':{'refreshInterval':6000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':30}
      ,'chDetails': {
          'bitcoin':{'pDu':{
-                "action":"rtm/subscribe","id":"20","body":{"channel":"bitcoin-transactions"}},'classNM':'default.default',
+                "action":"rtm/subscribe","id":"20","body":{"channel":"bitcoin-transactions"}},'classNM':'bitcoin.bitcoin',
                 "charts":{"msgRate":{"Title":"Bitcoin msgs 10 second msg count"}}
          }
          ,'meetup':{'pDu':{
@@ -35,7 +35,12 @@ cfg={'active':['Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #['F
                                                     }},'classNM':'default.default',
                 "charts":{"msgRate":{"Title":"Twitter events 10 second msg count"}}     
          }
-                                
+        ,'exchange':{'pDu':{
+                "action":"rtm/subscribe","id":"20"
+                ,"body":{"channel":"exchange-rates"
+                                                    }},'classNM':'bitcoin.exchange',
+                "charts":{"msgRate":{"Title":"Exchange events 10 second msg count"},"chartType":'column'}     
+         }                                            
     }
      ,'engines':{} #placeholder to store the processing engines (created from classNM) during run
 }

@@ -162,7 +162,7 @@ Polymer({
 		var settings = await gb.ajaxGetPromise('/settings/all'); //note requires the gb (global object or common code)
 		for (var i=0;i<settings.noOfPanelCharts;i++) {
 			chartHtml = chartHtml + '<google-chart class="chart'+i+'"  style="float:left;"'
-			+' type="bar"'
+			+' type="'+settings.chartTypes[i]+'"'
 			+' options=\'{"title": "Bitcoin message Rate","colors": ["'+colors[i % 5]+'"],"hAxis": {"title": "Count", "minValue": 0}}\''
 			+' data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
 			+'	</google-chart>\n'

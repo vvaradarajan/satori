@@ -36,6 +36,13 @@ def send_settingsData(setting):
     if setting=='all':
         js=cfg['settings']
         js['noOfPanelCharts']=len(cfg['active'])
+        chartTypes=[]
+        for c in cfg['active']:
+            if 'chartType' in cfg['chDetails'][c]['charts']:
+                chartTypes.append(cfg['chDetails'][c]['charts']['chartType'])
+            else:
+                chartTypes.append('bar')
+        js['chartTypes']=chartTypes
         return json.dumps(js)
         
     if setting == 'noOfPanelCharts':
@@ -54,7 +61,7 @@ def send_satori(menuItem):
         chartDataArr=[]
         pprint(cfg['engines'])
         for chNM in cfg['active']:
-            chartDataArr.append(cfg['engines'][chNM].slots.getSlotsJson(chNM))
+            chartDataArr.append(cfg['engines'][chNM].getSlotsJson(chNM))
         return json.dumps(chartDataArr)
 
     if menuItem=='Algorithm':

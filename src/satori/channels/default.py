@@ -81,11 +81,11 @@ class default:
     def stopCondition(self):
         if self.msgCount % 100 ==0:
             print ('msgCount='+str(self.msgCount))
-#         if self.msgCount > self.maxMsgCount:
-#             return True
-#         return False
         return self.stop
-    def processMsg(self,rawData):
+    def getSlotsJson(self,chNM):
+        return self.slots.getSlotsJson(chNM)
+    @staticmethod
+    def getMsgs(rawData):
         rawData=bytes(rawData,'UTF-8')
         #print (rawData)
         rawData1=rawData.decode("utf-8", "replace")
@@ -105,6 +105,9 @@ class default:
             sys.exit(1)
         msgs=rd['body']['messages']
         noOfMsgs = len(msgs);
+        return noOfMsgs,msgs
+    def processMsg(self,rawData):
+        noOfMsgs,msgs = default.getMsgs(rawData)
         self.msgCount += noOfMsgs
         self.slots.slots[self.noOfSlots-1] += noOfMsgs
 

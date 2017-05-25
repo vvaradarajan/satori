@@ -50,10 +50,7 @@ class ch:
         self.urlString=ch.endpoint + '?appkey='+ch.appkey
         processEngineNM=ch.chClassNamePrefix+'.'+cfg['chDetails'][nM]['classNM']
         print('processEngineNM-' + processEngineNM)
-        if cfg['chDetails'][nM]['classNM']=='default.default':
-            self.processEngine=ch.load_class_from_name(processEngineNM)(maxMsgCount)
-        else:
-            self.processEngine=ch.load_class_from_name(processEngineNM) #using class - not instance of class
+        self.processEngine=ch.load_class_from_name(processEngineNM)(maxMsgCount)
         cfg['engines'][nM]=self.processEngine
         self.showMessage=self.processEngine.processMsg
         self.stopCondition=self.processEngine.stopCondition
@@ -72,7 +69,10 @@ class timerForSlotShift (threading.Thread):
         self.timeLeft -=self.intervalSeconds
         for channel in cfg['active']:
             engine=cfg['engines'][channel]
-            engine.slots.shiftLeft()
+            try:
+                engine.slots.shiftLeft() #mainly default type classes have a shiftLeft for timeinterval
+            except AttributeError:
+                pass
             if self.timeLeft<0:
                 engine.stop=True
         print("Timer woke up!")
