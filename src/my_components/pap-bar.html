@@ -77,21 +77,7 @@ google-chart {
  </app-drawer>
  <div id="content">
     <div class="showChartPanel">
-<!--    	<google-chart class='chart0'  style="float:left;" -->
-<!-- 	 type='bar' -->
-<!-- 	 options='{"title": "Bitcoin message Rate"}' -->
-<!-- 	 data='[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]'> -->
-<!-- 	</google-chart> -->
-<!-- 	<google-chart class='chart1' style="float:left;" -->
-<!-- 	 type='bar' -->
-<!-- 	 options='{"title": "Message Rate per Minute","hAxis": {"title": "Count", "minValue": 0}}' -->
-<!-- 	 data='[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]'> -->
-<!-- 	</google-chart> -->
-<!-- 	<google-chart class='chart2' style="float:left;" -->
-<!-- 	 type='bar' -->
-<!-- 	 options='{"title": "Message Rate per Minute","hAxis": {"title": "Count", "minValue": 0}}' -->
-<!-- 	 data='[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]'> -->
-<!-- 	</google-chart> -->
+<!--    The Google chart template is created dynamically here based on chart information -->
    </div>
    <div class="showChart">
    	<google-chart
@@ -161,10 +147,18 @@ Polymer({
 		var colors=["#389090", "#f47e7d", "#85d045", "#fb8335", "#81c0c5"]
 		var settings = await gb.ajaxGetPromise('/settings/all'); //note requires the gb (global object or common code)
 		for (var i=0;i<settings.noOfPanelCharts;i++) {
+			
+			//apply mixins
+			var chartMixins=settings.chartMixins[i]
+			//set default values for unspecified options
+			if (!chartMixins.chartType) chartMixins.chartType='bar';
+			if (!chartMixins.Title) chartMixins.Title="Some graph title"
+			if (!chartMixins.haxis_title) chartMixins.haxis_title='count';
 			chartHtml = chartHtml + '<google-chart class="chart'+i+'"  style="float:left;"'
-			+' type="'+settings.chartTypes[i]+'"'
-			+' options=\'{"title": "Bitcoin message Rate","colors": ["'+colors[i % 5]+'"],"hAxis": {"title": "Count", "minValue": 0}}\''
-			+' data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
+			chartHtml +=' type="'+chartMixins.chartType+'"'
+			chartHtml += ', options=\'{"title": "' + chartMixins.Title+'","colors": ["'+colors[i % 5]+'"],"hAxis": {"title":"'
+				+ chartMixins.haxis_title+'", "minValue": 0}}\''
+			+', data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
 			+'	</google-chart>\n'
 		}
 		chartPanelDiv.innerHTML =chartHtml;
@@ -241,7 +235,6 @@ Polymer({
 					//process chart => the returned value is data for the chart
 					var gc = domRef.querySelector('div#content>div.show'+this.menuItem+'>google-chart')
 					gc.data= nc.data;
-					gc.options.title=nc.title;
 					//set autorefresh timer
 // 					this.periodicRefresh(domRef,contentSource);
 						//JSON.parse('[["Month", "Days"], ["Jyn", 31], ["Feb", 28], ["Mar", 31]]')
@@ -252,7 +245,6 @@ Polymer({
 					for (var i=0;i<noOfCharts;i++) {
 					   var gc = domRef.querySelector('div#content>div.show'+this.menuItem+'>google-chart.chart'+i);
 					   gc.data= nc[i].data;
-					   gc.options.title=nc[i].title;
 					};
 				} else {
 					//default processing of content => show papercard with content
