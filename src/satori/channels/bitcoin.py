@@ -67,7 +67,7 @@ class exchange():
 
     def processMsg(self,rawData):
         noOfMsgs,msgs = default.getMsgs(rawData)
-        pprint(msgs[0])
+        #pprint(msgs[0])
         self.msgCount += noOfMsgs
         msg=msgs[0] #only one msg
         for idx,sym in enumerate(self.currencies):
@@ -77,9 +77,8 @@ class exchange():
     def getSlotsJson(self,chNM):
         chartJson={}
         chartInfo=cfg['chDetails'][chNM]
-        chartJson['title']=chartInfo['charts']['msgRate']['Title']
         sJson=[]
-        sJson.append(["Time", "count"])
+        sJson.append(["Currency", "per $"])
         for i in range(self.noOfSlots):
             sj=[]
             sj.append(self.currencies[i])

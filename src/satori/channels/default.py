@@ -56,7 +56,6 @@ class slotter:
         #[["Time", "count"], ["0", 5], ["1", 6], ["2", 7]]
         chartJson={}
         chartInfo=cfg['chDetails'][chNM]
-        chartJson['title']=chartInfo['charts']['msgRate']['Title']
         sJson=[]
         sJson.append(["Time", "count"])
         for i in range(self.noOfSlots):

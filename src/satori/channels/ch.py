@@ -11,24 +11,9 @@ from pprint import pprint
 from src.cfg import cfg
 from asyncio.tasks import sleep
 class ch:
-    endpoint = "wss://open-data.api.satori.com"
-    appkey = "E0Acebca1fbB549AaBeA5D9bec2aacb8"
-    urlString = endpoint + '?appkey='+appkey
-    chClassNamePrefix='src.satori.channels'
-#     chDetails={'bitcoin':{'pDu':{
-#             "action":"rtm/subscribe","id":"20","body":{"channel":"bitcoin-transactions"}},'classNM':'bitcoin.bitcoin',
-#             "charts":{"msgRate":{"Title":"Bitcoin msgs in last 5 mins"}}
-#             }
-#         ,'meetup':{'pDu':{
-#             "action":"rtm/subscribe","id":"20","body":{"channel":"Meetup-RSVP"}},'classNM':'default.default'},
-#             "charts":{"msgRate":{"Title":"Meetup msgs in last 5 mins"}}     
-#           }
-    @staticmethod
-    def loadChClassesInCfgObsolete():
-        cfg['engines'] = {}
-        for chNM in cfg['active']:
-            cfg['engines'][chNM]= ch.load_class_from_name(ch.chClassNamePrefix+'.'+cfg['chDetails'][chNM]['classNM'])
-        pprint(cfg)
+    chClassNamePrefix='src.satori.channels' #location of channel processing classes
+#cfg.py contains the central data structure from which websocket details are loaded
+
     @staticmethod
     def load_class_from_name(fqcn):
         # Break apart fqcn to get module and classname
@@ -47,7 +32,7 @@ class ch:
 
     def __init__(self,nM,maxMsgCount):
         self.pDu=cfg['chDetails'][nM]['pDu']
-        self.urlString=ch.endpoint + '?appkey='+ch.appkey
+        self.urlString=cfg['websocketDetails']['endpoint'] + '?appkey='+cfg['websocketDetails']['appkey']
         processEngineNM=ch.chClassNamePrefix+'.'+cfg['chDetails'][nM]['classNM']
         print('processEngineNM-' + processEngineNM)
         self.processEngine=ch.load_class_from_name(processEngineNM)(maxMsgCount)
