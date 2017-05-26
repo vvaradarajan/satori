@@ -21,7 +21,7 @@ class bitcoin(default):
 
     def processMsg(self,rawData):
         noOfMsgs,msgs = self.getMsgs(rawData)
-        pprint(msgs[0])
+        #pprint(msgs[0])
         self.msgCount += noOfMsgs
         self.slots.slots[self.noOfSlots-1] += noOfMsgs
         
