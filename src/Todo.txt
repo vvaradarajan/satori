@@ -6,4 +6,4 @@ Installation instructions on Linux:
 5. nohup python3.6 src/runMe.py > /tmp/junk.out &
 
 
-NLSTFZ
+Notes: Images are served from this URL pattern (http://45.55.0.197:88/images/regex.PNG -- via nginx)
