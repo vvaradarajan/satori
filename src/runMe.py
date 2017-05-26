@@ -36,13 +36,10 @@ def send_settingsData(setting):
     if setting=='all':
         js=cfg['settings']
         js['noOfPanelCharts']=len(cfg['active'])
-        chartTypes=[]
+        chartMixins=[]
         for c in cfg['active']:
-            if 'chartType' in cfg['chDetails'][c]['charts']:
-                chartTypes.append(cfg['chDetails'][c]['charts']['chartType'])
-            else:
-                chartTypes.append('bar')
-        js['chartTypes']=chartTypes
+            chartMixins.append(cfg['chDetails'][c]['charts']['msgRate']['mixin'])
+        js['chartMixins']=chartMixins
         return json.dumps(js)
         
     if setting == 'noOfPanelCharts':
