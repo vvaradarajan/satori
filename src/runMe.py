@@ -7,7 +7,20 @@ import markdown
 from pprint import pprint
 from src.cfg import cfg
 import os
-app = Flask(__name__,static_url_path='/static')
+class myFlask(Flask):
+    def __init__(self,nM,**kwargs):
+        #start the threads for websocket read and timer
+        rwsArr=[]
+        for chNM in cfg['active']:
+            rws=readWebsock(chNM,cfg['settings']['noOfMsgs'])
+            rwsArr.append(rws)
+            rws.start()
+        # start timer
+        tss=timerForSlotShift(cfg['settings']['slotShiftTimeSecs'],cfg['settings']['totalRunTime']) # start the timer thread
+        tss.start()
+        super(myFlask, self).__init__(nM,**kwargs)
+        
+app = myFlask(__name__,static_url_path='/static')
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
 APP_STATIC = os.path.join(APP_ROOT, 'static')
  
@@ -79,14 +92,5 @@ def send_satori(menuItem):
 
 
 if __name__ == "__main__":
-    #ch.loadChClassesInCfg()
-    rwsArr=[]
-    for chNM in cfg['active']:
-        rws=readWebsock(chNM,cfg['settings']['noOfMsgs'])
-        rwsArr.append(rws)
-        rws.start()
-    # start timer
-    tss=timerForSlotShift(cfg['settings']['slotShiftTimeSecs'],cfg['settings']['totalRunTime']) # start the timer thread
-    tss.start()
-    
+    #ch.loadChClassesInCfg()   
     app.run(host='0.0.0.0') #0.0.0.0 allows external connections .. otherwise flash restricts it to localhost
