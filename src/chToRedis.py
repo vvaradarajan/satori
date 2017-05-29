@@ -23,7 +23,10 @@ class timerForSlotShift ():
         self.timeLeft=totalTime
         self.ns = slotShiftInterval
         self.nr = refreshInterval
-        self.sleepInterval=0
+        if (self.nr < self.ns):
+            self.sleepInterval=self.nr
+        else:
+            self.sleepInterval=self.ns
     def calcTimeState(self):
         #A short algorithm that supports refresh and slotshift. Keeps the timeout value and
         #the state of the time out -- either slotshift or refresh using two numbers and a state
