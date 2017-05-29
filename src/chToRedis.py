@@ -70,7 +70,8 @@ if __name__ == '__main__':
         rws.start()
     # main thread --> loops and updates the slots and stores them in redis
     r = redis.Redis(host='localhost', port=6379, db=0)
-    ti=timerForSlotShift(cfg['settings']['slotShiftTimeSecs'],cfg['settings']['refreshInterval'],cfg['settings']['totalRunTime'])
+    #Note refresh interval is in milliseconds
+    ti=timerForSlotShift(cfg['settings']['slotShiftTimeSecs'],cfg['settings']['refreshInterval'] % 1000,cfg['settings']['totalRunTime'])
     ti.calcTimeState() #set the timestate and sleep interval initially
     while True:
         if ti.timeLeft<0:
