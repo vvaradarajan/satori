@@ -1,3 +1,13 @@
+##### This file can be run by itself, and works without nginx, uwsgi (requires redis) ####
+##### Note: the program chToRedis.py MUST be running in the background #####
+##Normal commands to run using nginx and uwsgi:
+## Do all this from satori directory
+## export PYTHONPATH=.
+## nginx -s reload => use if changes made to ngins config.
+## kill -s SIGQUIT <all uwsgi pids) => quit old uwsgi (Note: uwsgi automatically runs Python app
+## nohup uwsgi --ini ./src/satori_uwsgi.ini & => starts uwsgi (and that starts the python/flask app server)
+## nohup python3.6 src/chToRedis.py & => start the redis feeder
+## Also make sure that redis is running (nohup redis-server &)
 from flask import Flask,get_template_attribute,send_from_directory
 from src.satori.websock import readWebsock
 #from src.satori.bitcoin2Old import meetup
