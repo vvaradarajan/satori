@@ -3,15 +3,10 @@ Created on May 28, 2017
 
 @author: acer
 '''
-from flask import Flask,get_template_attribute,send_from_directory
 from src.satori.websock import readWebsock
-#from src.satori.bitcoin2Old import meetup
-from src.satori.channels.ch import ch, timerForSlotShift
 import json
-import markdown
 from pprint import pprint
 from src.cfg import cfg
-import os
 import time
 import redis
 class timerForSlotShift ():
