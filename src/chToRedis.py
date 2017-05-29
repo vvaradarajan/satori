@@ -43,6 +43,7 @@ class timerForSlotShift ():
         #urlString = endpoint + '?appkey='+appkey
         time.sleep(self.sleepInterval)
         self.timeLeft -=self.sleepInterval
+        print('slotShiftState = ',str(self.slotShiftState), '; sleepInterval=',self.sleepInterval)
         if (self.slotShiftState):
             for channel in cfg['active']:
                 engine=cfg['engines'][channel]
