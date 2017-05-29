@@ -16,22 +16,42 @@ import time
 import redis
 class timerForSlotShift ():
 #at specified time interval shifts slots (should lock slots while shifting..not done yet)
-    def __init__(self,intervalSeconds,totalTime):
+    def __init__(self,slotShiftInterval,refreshInterval,totalTime):
         super().__init__()
-        self.intervalSeconds=intervalSeconds #name of the channel (defined in bitcoin2.ch)
+        self.slotShiftInterval=slotShiftInterval
+        self.refreshInterval=refreshInterval
         self.timeLeft=totalTime
+        self.ns = slotShiftInterval
+        self.nr = refreshInterval
+        self.sleepInterval
+    def calcTimeState(self):
+        #A short algorithm that supports refresh and slotshift. Keeps the timeout value and
+        #the state of the time out -- either slotshift or refresh using two numbers and a state
+        self.ns -= self.sleepInterval
+        self.nr -= self.sleepInterval
+        if (self.ns == 0):
+            self.ns = self.slotShiftInterval
+        else:
+            self.nr = self.refreshInterval
+        if (self.ns > self.nr ):
+            self.slotShiftState=False
+            self.sleepInterval = self.nr
+        else:
+            self.slotShiftState=True
+            self.sleepInterval = self.ns           
     def slotShift(self):
         #urlString = endpoint + '?appkey='+appkey
-        time.sleep(self.intervalSeconds)
-        self.timeLeft -=self.intervalSeconds
-        for channel in cfg['active']:
-            engine=cfg['engines'][channel]
-            try:
-                engine.slots.shiftLeft() #mainly default type classes have a shiftLeft for timeinterval
-            except AttributeError:
-                pass
-            if self.timeLeft<0:
-                engine.stop=True
+        time.sleep(self.sleepInterval)
+        self.timeLeft -=self.sleepInterval
+        if (self.slotShiftState):
+            for channel in cfg['active']:
+                engine=cfg['engines'][channel]
+                try:
+                    engine.slots.shiftLeft() #mainly default type classes have a shiftLeft for timeinterval
+                except AttributeError:
+                    pass
+                if self.timeLeft<0:
+                    engine.stop=True
         print("Timer woke up!")
 
 def getSlotsJson():
@@ -49,7 +69,8 @@ if __name__ == '__main__':
         rws.start()
     # main thread --> loops and updates the slots and stores them in redis
     r = redis.Redis(host='localhost', port=6379, db=0)
-    ti=timerForSlotShift(cfg['settings']['slotShiftTimeSecs'],cfg['settings']['totalRunTime'])
+    ti=timerForSlotShift(cfg['settings']['slotShiftTimeSecs'],cfg['settings']['refreshInterval'],cfg['settings']['totalRunTime'])
+    ti.calcTimeState() #set the timestate and sleep interval initially
     while True:
         if ti.timeLeft<0:
             print("Timer stopped!")
@@ -57,6 +78,7 @@ if __name__ == '__main__':
         ti.slotShift()
         #Store a json blob in redis
         r.set('chartPanel',getSlotsJson())
+        ti.calcTimeState()
         pprint(json.loads(str(r.get('chartPanel'),'utf-8')))
     print("Timer Over -- No more new Data to Redis!")
             
