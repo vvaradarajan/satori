@@ -31,7 +31,7 @@ class timerForSlotShift ():
         self.nr -= self.sleepInterval
         if (self.ns == 0):
             self.ns = self.slotShiftInterval
-        else:
+        if (self.nr ==0 ):
             self.nr = self.refreshInterval
         if (self.ns > self.nr ):
             self.slotShiftState=False
