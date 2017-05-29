@@ -24,8 +24,6 @@ class timerForSlotShift ():
         self.ns = slotShiftInterval
         self.nr = refreshInterval
         self.sleepInterval=0
-        print('slotShiftState = ',str(self.slotShiftState), '; sleepInterval=',self.sleepInterval
-              ,'; slotShiftInterval = ', self.ns,'; refreshInterval = ',self.nr)
     def calcTimeState(self):
         #A short algorithm that supports refresh and slotshift. Keeps the timeout value and
         #the state of the time out -- either slotshift or refresh using two numbers and a state
@@ -75,6 +73,8 @@ if __name__ == '__main__':
     #Note refresh interval is in milliseconds
     ti=timerForSlotShift(cfg['settings']['slotShiftTimeSecs'],cfg['settings']['refreshInterval'] % 1000,cfg['settings']['totalRunTime'])
     ti.calcTimeState() #set the timestate and sleep interval initially
+    print('slotShiftState = ',str(ti.slotShiftState), '; sleepInterval=',ti.sleepInterval
+              ,'; slotShiftInterval = ', ti.ns,'; refreshInterval = ',ti.nr)
     while True:
         if ti.timeLeft<0:
             print("Timer stopped!")
