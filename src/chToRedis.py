@@ -24,6 +24,8 @@ class timerForSlotShift ():
         self.ns = slotShiftInterval
         self.nr = refreshInterval
         self.sleepInterval=0
+        print('slotShiftState = ',str(self.slotShiftState), '; sleepInterval=',self.sleepInterval
+              ,'; slotShiftInterval = ', self.ns,'; refreshInterval = ',self.nr)
     def calcTimeState(self):
         #A short algorithm that supports refresh and slotshift. Keeps the timeout value and
         #the state of the time out -- either slotshift or refresh using two numbers and a state
@@ -81,6 +83,8 @@ if __name__ == '__main__':
         #Store a json blob in redis
         r.set('chartPanel',getSlotsJson())
         ti.calcTimeState()
+        print('slotShiftState = ',str(ti.slotShiftState), '; sleepInterval=',ti.sleepInterval
+              ,'; slotShiftInterval = ', ti.ns,'; refreshInterval = ',ti.nr)
         pprint(json.loads(str(r.get('chartPanel'),'utf-8')))
     print("Timer Over -- No more new Data to Redis!")
             
