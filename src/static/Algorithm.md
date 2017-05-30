@@ -5,6 +5,7 @@ in a bar-graph. There are two major parts of the design:
 1. Design a common data-structure, which is then distributed to the technology stack. This helps specify the functions of each portion of the stack. Here 'stack' is comprised of the technologies used (Python, Javascript, Google-charts etc.).  
 2. Multithreading as required by this application. This application is divided into websockets processing, rest API processing and timer event processing. Each of these take place in individual threads.
 
+![alt Text](http://45.55.0.197:88/images/TechStack.PNG)
 ### Methodology:
 1. Data driven design: Each channel is modelled as a data-structure, that
  contains the required information about each channel. This structure contains
