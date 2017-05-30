@@ -7,17 +7,16 @@ in a bar-graph. There are two major parts of the design:
 
 ![alt Text](http://45.55.0.197:88/images/TechStack.PNG)
 ### Methodology:
-1. Data driven design: Each channel is modelled as a data-structure, that
- contains the required information about each channel. This structure contains
+1. Data driven design: Each channel is modelled as a data-structure. This structure contains
  all the information required, from the 'backend' - websockets, to the
- front-end, which is the charts.  The main purpose of this single data-structure is to co-ordinate the programming across the technology stack. In this application the structure is:  
+ front-end, which is the charts.  The main purpose of this single data-structure is to co-ordinate the programming across the technology stack. The data structure overview is:  
   
 	+ Channel Name -the key  
 	+ Web-socket-info - Information required to connect to the websocket
 	+ Class Name - The name of the program that controls the processing of the websocket message. Here it is a Python Class.  
 	+ Chart Title - The title of the Chart on which the information is to be displayed. Here it is Google Chart on the UI
      
- The entire stack reads this data structure and performs accordingly. The data from this structure is distributed to the technology stack. The distribution is thru reading the stack directly (from Python) or thru a rest api (for Google Chart).
+Each part of the stack reads data relevant to it from this data structure and performs accordingly. The data structure is read directly (from Python) or thru a rest api (for Google Chart, using javascript).
  
 ### Algorithm
 
