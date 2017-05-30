@@ -4,7 +4,7 @@ Created on May 21, 2017
 @author: acer
 '''
 cfg={'active':['exchange','Flying-A320s','meetup','github','bitcoin','twitter'] #['Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
-     ,'settings':{'refreshInterval':6000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':36000}
+     ,'settings':{'refreshInterval':6000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':72000}
      ,'chDetails': {
          'bitcoin':{'pDu':{
                 "action":"rtm/subscribe","id":"20","body":{"channel":"bitcoin-transactions"}},'classNM':'bitcoin.bitcoin',
