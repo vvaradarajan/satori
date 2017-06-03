@@ -1,7 +1,7 @@
 ## Design
 *Concept*: The purpose is to read messages from satori channels via websockets,
 count the number of messages within each interval, and display the results
-in a bar-graph. There are two major parts of the design:  
+in a bar-graph. There are two major parts of the design:
 1. Design a common data-structure, which is then distributed to the technology stack. This helps specify the functions of each portion of the stack. Here 'stack' is comprised of the technologies used (Python, Javascript, Google-charts etc.).  
 2. Multithreading as required by this application. This application is divided into websockets processing, rest API processing and timer event processing. Each of these take place in individual threads.
 

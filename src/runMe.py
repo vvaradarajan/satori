@@ -87,9 +87,13 @@ def send_satori(menuItem):
         return(str(r.get('chartPanel'),'utf-8'))
 
 
-    if menuItem=='Algorithm':
+    if menuItem=='Algorithm' or menuItem=='Blog':
+        if (menuItem=='Algorithm'):
+            fileNM='Algorithm.md'
+        else:
+            fileNM='DataStructureForFullStack.md'
         md=None
-        with open(os.path.join(APP_STATIC, 'Algorithm.md')) as f:
+        with open(os.path.join(APP_STATIC, fileNM)) as f:
             md = f.read()
         extensions = ['extra', 'smarty']
         html = markdown.markdown(md, extensions=extensions, output_format='html5')

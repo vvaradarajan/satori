@@ -74,11 +74,15 @@ def send_satori(menuItem):
             chartDataArr.append(cfg['engines'][chNM].getSlotsJson(chNM))
         return json.dumps(chartDataArr)
 
-    if menuItem=='Algorithm':
+    if menuItem=='Algorithm' or menuItem=='Blog':
+        if (menuItem=='Algorithm'):
+            fileNM='Algorithm.md'
+        else:
+            fileNM='DataStructureForFullStack.md'
         md=None
-        with open(os.path.join(APP_STATIC, 'Algorithm.md')) as f:
+        with open(os.path.join(APP_STATIC, fileNM)) as f:
             md = f.read()
-        extensions = ['extra', 'smarty']
+        extensions = ['extra', 'smarty','tables']
         html = markdown.markdown(md, extensions=extensions, output_format='html5')
         defMsg={}
         defMsg['Message']=html
