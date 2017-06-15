@@ -16,6 +16,7 @@ import json
 import markdown
 from pprint import pprint
 from src.cfg import cfg
+from src.cfg_Math import cfg_Math
 import os
 import redis
 class myFlask(Flask):
@@ -57,7 +58,7 @@ def send_images(path):
 
 @app.route('/settings/<path:setting>')
 def send_settingsData(setting):
-    if setting=='all':
+    if setting=='satori':
         js=cfg['settings']
         js['noOfPanelCharts']=len(cfg['active'])
         chartMixins=[]
@@ -65,7 +66,9 @@ def send_settingsData(setting):
             chartMixins.append(cfg['chDetails'][c]['charts']['msgRate']['mixin'])
         js['chartMixins']=chartMixins
         return json.dumps(js)
-        
+    if setting=='math':
+        js=cfg_Math['settings'];
+        return json.dumps(js)
     if setting == 'noOfPanelCharts':
         return str(len(cfg['active']))
     return "0"
@@ -87,15 +90,18 @@ def send_satori(menuItem):
         return(str(r.get('chartPanel'),'utf-8'))
 
 
-    if menuItem=='Algorithm' or menuItem=='Blog':
+    if menuItem in ['Algorithm','Blog','PowerBattery']:
         if (menuItem=='Algorithm'):
             fileNM='Algorithm.md'
         else:
-            fileNM='DataStructureForFullStack.md'
+            if (menuItem=='PowerBattery'):
+                fileNM='PowerBatteryOptimization.md'
+            else:
+                fileNM='DataStructureForFullStack.md'
         md=None
         with open(os.path.join(APP_STATIC, fileNM)) as f:
             md = f.read()
-        extensions = ['extra', 'smarty']
+        extensions = ['extra', 'smarty','tables']
         html = markdown.markdown(md, extensions=extensions, output_format='html5')
         defMsg={}
         defMsg['Message']=html

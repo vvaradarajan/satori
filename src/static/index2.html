@@ -85,7 +85,7 @@ applied. They work if they are on the page as in here -->
 <body unresolved>
  <dom-module id="main-document">
  <template>
-    <pap-bar id="contentObject"></pap-bar>
+    <pap-bar id="contentObject" settings-url="/settings/satori"></pap-bar>
  </template>
  <script>
  Polymer( {
@@ -126,12 +126,7 @@ applied. They work if they are on the page as in here -->
 	   }
 	 }
    ,ready: function() {
-	 this.$.contentObject.setContentSource.call(this.$.contentObject,this.contentSource);
-	 //also start off the chartPanel
-	 var dr=this.$.contentObject.$.drawer;
-	 var eventClick = new Event('tap');
-	 dr.dispatchEvent(eventClick);
-	 console.log('Gazebo');
+	 //this.$.contentObject.setContentSource.call(this.$.contentObject,this.contentSource);
    }
  });
  </script>

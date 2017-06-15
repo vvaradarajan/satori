@@ -3,8 +3,11 @@ Created on May 21, 2017
 
 @author: acer
 '''
-cfg={'active':['exchange','Flying-A320s','meetup','github','bitcoin','twitter'] #['Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
-     ,'settings':{'refreshInterval':6000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':72000}
+cfg={'active':['bitcoin'] #['exchange','Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
+     ,'settings':{'refreshInterval':6000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':72000
+                  ,'main-title':'Satori Channel traffic rates..'
+                  ,'menuitems':['Demo','Chart','ChartPanel','Algorithm','Blog','About']
+                  ,'defaultMenuItem':'ChartPanel'}
      ,'chDetails': {
          'bitcoin':{'pDu':{
                 "action":"rtm/subscribe","id":"20","body":{"channel":"bitcoin-transactions"}},'classNM':'bitcoin.bitcoin',
@@ -49,7 +52,7 @@ cfg={'active':['exchange','Flying-A320s','meetup','github','bitcoin','twitter'] 
          }                             
     }
      ,'websocketDetails': {
-         'endpoint':"wss://open-data.api.satori.com", 'appkey':"E0Acebca1fbB549AaBeA5D9bec2aacb8"
+         'endpoint':"wss://open-data.api.satori.com", 'appkey':"DAA00449f8c4431BAAfa720FA44c628d"
         #urlString = endpoint + '?appkey='+appkey
     }
      ,'engines':{} #placeholder to store the processing engines (created from classNM) during run

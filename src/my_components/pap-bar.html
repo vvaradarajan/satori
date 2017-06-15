@@ -69,12 +69,15 @@ google-chart {
  </app-header>
   <app-drawer id="drawer" closed swipe-open style="z-index:1">
   <!-- These entries should come from a menu table, along with refresh rate and possibly other parameters -->
-    <paper-item id="Demo">Demo</paper-item>
-    <paper-item id="Chart">Chart</paper-item>
-    <paper-item id="ChartPanel">ChartPanel</paper-item>
-    <paper-item id="Algorithm">Algorithm</paper-item>
-    <paper-item id="Blog">Blog</paper-item>
-    <paper-item id="About">About</paper-item>
+  	<template is="dom-repeat" items="{{menuitems}}">
+		<paper-item id="{{item}}">{{item}}</paper-item>
+    </template>
+<!--     <paper-item id="Demo">Demo</paper-item> -->
+<!--     <paper-item id="Chart">Chart</paper-item> -->
+<!--     <paper-item id="ChartPanel">ChartPanel</paper-item> -->
+<!--     <paper-item id="Algorithm">Algorithm</paper-item> -->
+<!--     <paper-item id="Blog">Blog</paper-item> -->
+<!--     <paper-item id="About">About</paper-item> -->
  </app-drawer>
  <div id="content">
     <div class="showChartPanel">
@@ -125,13 +128,14 @@ google-chart {
 	 <div class="showBlog">
 		<paper-card>buldiga</paper-card>
 	 </div>
-     <div class="showAbout1">About</div>
+     <div class="showPowerBattery">About</div>
     </template>
 <script>
 Polymer({
 	is: 'pap-bar'
 	,properties: {
-		refreshinterval: {type: Number, value: 6000} //refreshInterval for charts (cal also be set as attribute of this component)
+		//refreshinterval: {type: Number, value: 6000} //refreshInterval for charts (cal also be set as attribute of this component)
+		settingsUrl: String //REMEMBER camel case is replace with '-' and all lower case in attribute name!
 	}
 	,contentSource: null //function that returns a promise (this enables the ability to wait for content before display)
 	,listeners: {
@@ -149,24 +153,37 @@ Polymer({
 		var chartPanelDiv = this.querySelector('div.showChartPanel')
 		var chartHtml=''
 		var colors=["#389090", "#f47e7d", "#85d045", "#fb8335", "#81c0c5"]
-		var settings = await gb.ajaxGetPromise('/settings/all'); //note requires the gb (global object or common code)
-		for (var i=0;i<settings.noOfPanelCharts;i++) {
-			
-			//apply mixins
-			var chartMixins=settings.chartMixins[i]
-			//set default values for unspecified options
-			if (!chartMixins.chartType) chartMixins.chartType='bar';
-			if (!chartMixins.Title) chartMixins.Title="Some graph title"
-			if (!chartMixins.haxis_title) chartMixins.haxis_title='count';
-			chartHtml = chartHtml + '<google-chart class="chart'+i+'"  style="float:left;"'
-			chartHtml +=' type="'+chartMixins.chartType+'"'
-			chartHtml += ', options=\'{"title": "' + chartMixins.Title+'","colors": ["'+colors[i % 5]+'"],"hAxis": {"title":"'
-				+ chartMixins.haxis_title+'", "minValue": 0}}\''
-			+', data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
-			+'	</google-chart>\n'
+		var settings = await gb.ajaxGetPromise(this.settingsUrl); //note requires the gb (global object or common code)
+		if (this.settingsUrl.endsWith("satori")) {
+			//satori specific settings
+			for (var i=0;i<settings.noOfPanelCharts;i++) {
+				
+				//apply mixins
+				var chartMixins=settings.chartMixins[i]
+				//set default values for unspecified options
+				if (!chartMixins.chartType) chartMixins.chartType='bar';
+				if (!chartMixins.Title) chartMixins.Title="Some graph title"
+				if (!chartMixins.haxis_title) chartMixins.haxis_title='count';
+				chartHtml = chartHtml + '<google-chart class="chart'+i+'"  style="float:left;"'
+				chartHtml +=' type="'+chartMixins.chartType+'"'
+				chartHtml += ', options=\'{"title": "' + chartMixins.Title+'","colors": ["'+colors[i % 5]+'"],"hAxis": {"title":"'
+					+ chartMixins.haxis_title+'", "minValue": 0}}\''
+				+', data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
+				+'	</google-chart>\n'
+			}
+			chartPanelDiv.innerHTML =chartHtml;
+			this.contentProvider.refreshInterval=settings.refreshinterval;
 		}
-		chartPanelDiv.innerHTML =chartHtml;
-		this.contentProvider.refreshInterval=settings.refreshinterval;
+		//common settings
+		this.querySelector('div[main-title]').innerHTML=settings['main-title'];
+		this.menuitems = settings['menuitems'];
+		this.defaultMenuItem = settings['defaultMenuItem'];
+		//Set the contentSource. The contentSource is obtained from the parent page (i.e. domHost)
+		this.setContentSource(this.domHost.contentSource);
+		//Trigger an event to select the default menu (ChartPanel for satori)
+	    var dr=this.$.drawer;
+	    var eventClick = new Event('tap');
+	    dr.dispatchEvent(eventClick);
 		console.log(this.is + 'is ready');}
 	,menuToggle: function () {
 		this.$.drawer.close();
@@ -178,7 +195,7 @@ Polymer({
 		this.$.drawer.close();
 		var menuItem=e.srcElement.id;
 		if (menuItem=='drawer') {
-			menuItem='ChartPanel'; //default selection (triggered by event from index2.html)
+			menuItem=this.defaultMenuItem; //'ChartPanel'; //default selection (triggered by event from index2.html)
 		}
 		this.contentProvider.menuItem=menuItem;
 		this.contentProvider.show(this,this.contentSource);
@@ -250,6 +267,11 @@ Polymer({
 					   var gc = domRef.querySelector('div#content>div.show'+this.menuItem+'>google-chart.chart'+i);
 					   gc.data= nc[i].data;
 					};
+				} else if (this.menuItem == 'PowerBattery') {
+					//process the math on this page after putting it into the dom
+					var mathDoc = domRef.querySelector('div#content>div.show'+this.menuItem);
+					mathDoc.innerHTML=nc.Message;
+					MathJax.Hub.Queue(["Typeset", MathJax.Hub, mathDoc]);
 				} else {
 					//default processing of content => show papercard with content
 					domRef.querySelector('div#content>div.show'+this.menuItem).innerHTML=nc.Message;
