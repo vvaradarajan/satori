@@ -1,0 +1,137 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html lang="en">
+<head>
+  <title>Power Battery Analysis</title>
+
+
+  <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="/bower_components/polymer/polymer.html">
+  <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
+  <link rel="import" href="/bower_components/iron-icons/iron-icons.html">  
+  <link rel="import" href="/bower_components/iron-collapse/iron-collapse.html">
+  <link rel="import" href="/bower_components/paper-item/paper-item.html">
+
+  <link rel="import" href="/bower_components/iron-icons/communication-icons.html">
+  <link rel="import" href="/bower_components/iron-icons/hardware-icons.html">
+  <link rel="import" href="/bower_components/iron-icons/social-icons.html">
+  <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout.html">
+  <link rel="import" href="/bower_components/paper-button/paper-button.html">
+  <link rel="import" href="/bower_components/paper-styles/color.html">
+  <link rel="import" href="/bower_components/paper-styles/typography.html">
+  <link rel="import" href="/bower_components/paper-card/paper-card.html">
+  
+  <link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="/bower_components/app-layout/app-box/app-box.html">
+<link rel="import" href="/bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="/bower_components/google-chart/google-chart.html">
+<link rel="import" href="/my_components/pap-bar.html">
+
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=AM_HTMLorMML"></script>
+
+<script>
+var gb={
+		   ajaxGetPromise: function get(url) {
+			   // Return a new promise.
+			   return new Promise(function(resolve, reject) {
+			     // Do the usual XHR stuff
+			     var req = new XMLHttpRequest();
+			     req.open('GET', url);
+
+			     req.onload = function() {
+			       // This is called even on 404 etc
+			       // so check the status
+			       if (req.status == 200) {
+			         // Resolve the promise with the response text (currently JSON response)
+			         resolve(JSON.parse(req.response));
+			       }
+			       else {
+			         // Otherwise reject with the status text
+			         // which will hopefully be a meaningful error
+			         reject(Error(req.statusText));
+			       }
+			     };
+
+			     // Handle network errors
+			     req.onerror = function() {
+			       reject(Error("Network Error"));
+			     };
+
+			     // Make the request
+			     req.send();
+			   });
+			 }
+};
+
+
+</script>
+<!--  This is a style for pap-bar.html markdown -- For dynamic node creation the styles there are not automatically
+applied. They work if they are on the page as in here -->
+<style>
+      table, th, td {
+		   border: 1px solid black;
+	  }
+</style>
+</head>
+<body unresolved>
+ <dom-module id="main-document">
+ <template>
+    <pap-bar id="contentObject" settings-url="/settings/math"></pap-bar>
+ </template>
+ <script>
+ Polymer( {
+	 is: 'main-document'
+	 ,contentSource: {
+		menuItem: null //common storage for all functions
+		,getContent: function(menuItem) {
+			//return a promise that resolves to content
+			this.menuItem=menuItem;
+			if (this['getAsyncResponseAjax']) {
+				return this['getAsyncResponseAjax'](this.menuItem)
+			};
+			return this.dummyPromise(this.menuItem); //return blank content
+	     }
+ 	    ,dummyPromise:function (mi) { return new Promise(function(resolve,reject){
+			resolve('<paper-card>default content for: ' + mi + ' </paper-card>');
+		    })
+ 	    }
+ 	    ,getDemoAsyncResponse: function () {
+ 		   return new Promise(function(resolve,reject){
+ 			 var error=false;
+ 			 setTimeout(function(){
+ 				resolve("<paper-card>bandogaga</paper-card>"); //callback resolve with received data
+ 			 },300);
+ 			 //if (error) return reject("error occurred");
+ 		   });
+ 	   }
+ 	   ,getAsyncResponseAjax: function (menuItem) {
+ 		   var url='/satori/'+menuItem;
+ 		   return gb.ajaxGetPromise(url);
+ 	   }
+ 	   ,getChartPanelAsyncResponseAjax: function () {
+ 		   var url='/static/chartPanelData';
+ 		   return gb.ajaxGetPromise(url);
+ 	   }
+	   ,getAlgorithmContent: function(){
+		 return  "<paper-card>bandogaga</paper-card>"  
+	   }
+	 }
+   ,ready: function() {
+   }
+ });
+ </script>
+</dom-module>
+<main-document></main-document>
+</body>
+</html>
