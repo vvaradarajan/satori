@@ -52,7 +52,7 @@ cfg={'active':['bitcoin'] #['exchange','Flying-A320s','meetup','github','bitcoin
          }                             
     }
      ,'websocketDetails': {
-         'endpoint':"wss://open-data.api.satori.com", 'appkey':"DAA00449f8c4431BAAfa720FA44c628d"
+         'endpoint':"wss://open-data.api.satori.com/v2", 'appkey':"DAA00449f8c4431BAAfa720FA44c628d"
         #urlString = endpoint + '?appkey='+appkey
     }
      ,'engines':{} #placeholder to store the processing engines (created from classNM) during run
