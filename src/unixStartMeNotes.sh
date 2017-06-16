@@ -10,3 +10,10 @@ export PYTHONPATH=.
 ## uwsgi has been install as a system service (systemd)
 ## sudo service satori start
 ##
+
+#########Running instruction on local ##############
+1. From Eclipse: run the runMe.py
+2. From the command prompt: 
+   cd C:\vasan\workspaceDecisions\satori1 (where project is)
+   set PYTHONPATH=.
+   python src/chToRedis.py (Keep this running)
