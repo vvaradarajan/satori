@@ -7,7 +7,7 @@ export PYTHONPATH=.
 ## nohup uwsgi --ini ./src/satori_uwsgi.ini & => starts uwsgi (and that starts the python/flask app server)
 ## nohup python3.6 src/chToRedis.py & => start the redis feeder
 ## Also make sure that redis is running (nohup redis-server &)
-## uwsgi has been install as a system service (systemd)
+## uwsgi has been install as a system service (systemd) -- not yet..?
 ## sudo service satori start
 ##
 
@@ -17,3 +17,8 @@ export PYTHONPATH=.
    cd C:\vasan\workspaceDecisions\satori1 (where project is)
    set PYTHONPATH=.
    python src/chToRedis.py (Keep this running)
+
+#########Two modes of running ############
+Using Threading (chToRedis.py, websock.py)
+Using asyncio (chToRedisAsync.py, websockAsync.py)
+The asyncio is simpler!
