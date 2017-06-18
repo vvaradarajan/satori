@@ -9,7 +9,10 @@ from pprint import pprint
 from src.cfg import cfg
 import time
 import redis
+import logging
+import os
 class timerForSlotShift ():
+    log = logging.getLogger(__name__)
 #at specified time interval shifts slots (should lock slots while shifting..not done yet)
     def __init__(self,slotShiftInterval,refreshInterval,totalTime):
         super().__init__()
@@ -60,6 +63,9 @@ def getSlotsJson():
     return json.dumps(chartDataArr)
 
 if __name__ == '__main__':
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+    log = logging.getLogger(__name__)
+    log.info("Starting Satori chToRedis")
     #start the threads for websocket read and timer
     rwsArr=[]
     for chNM in cfg['active']:
