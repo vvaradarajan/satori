@@ -19,6 +19,7 @@ from src.cfg import cfg
 from src.cfg_Math import cfg_Math
 import os
 import redis
+import logging
 class myFlask(Flask):
     def __init__(self,nM,**kwargs):
         #start the threads for websocket read and timer
@@ -113,7 +114,9 @@ def send_satori(menuItem):
     defMsg['Message']='Content development in Progress for {0}.  Try ChartPanel instead..'.format(menuItem)
     return json.dumps(defMsg)
 
-
 if __name__ == "__main__":
     #ch.loadChClassesInCfg()   
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+    log = logging.getLogger(__name__)
+    log.info("Starting Satori WebServer")
     app.run(host='0.0.0.0') #0.0.0.0 allows external connections .. otherwise flash restricts it to localhost

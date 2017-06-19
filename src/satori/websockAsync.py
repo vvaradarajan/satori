@@ -3,6 +3,7 @@ import websockets
 import json
 from src.satori.channels.ch import ch
 import threading
+import logging
 
 class readWebsock ():
 # #channel = "bitcoin-transactions"
@@ -21,6 +22,7 @@ class readWebsock ():
         #urlString = endpoint + '?appkey='+appkey
         myCh=ch(self.chNM,self.maxMsgCount)
         print (myCh.urlString)
+        
         async with websockets.connect(myCh.urlString) as websocket:
             await websocket.send(json.dumps(myCh.pDu))
             print("> {}".format(myCh.pDu))
