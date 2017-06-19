@@ -2,8 +2,8 @@ import asyncio
 import websockets
 import json
 from src.satori.channels.ch import ch
-import threading
 import logging
+log = logging.getLogger(__name__)
 
 class readWebsock ():
 # #channel = "bitcoin-transactions"
@@ -21,20 +21,28 @@ class readWebsock ():
     async def hello(self):
         #urlString = endpoint + '?appkey='+appkey
         myCh=ch(self.chNM,self.maxMsgCount)
-        print (myCh.urlString)
+        log.info('Connect to : ' + myCh.urlString)
+        while True:
+            async with websockets.connect(myCh.urlString) as websocket:
+                await websocket.send(json.dumps(myCh.pDu))
+                print("> {}".format(myCh.pDu))
         
-        async with websockets.connect(myCh.urlString) as websocket:
-            await websocket.send(json.dumps(myCh.pDu))
-            print("> {}".format(myCh.pDu))
-    
-            greeting = await websocket.recv()
-            print("< {}".format(greeting))
-            while True:
-                message = await websocket.recv()
-                #print (message)
-                myCh.showMessage(message)
-                if myCh.stopCondition():
-                    break
+                greeting = await websocket.recv()
+                if (json.loads(greeting)['action'] != 'rtm/subscribe/ok'):
+                    log.info("< {}".format(greeting))
+                    log.info(json.dumps(myCh.pDu))
+                    return #stop reading this channel
+                print("< {}".format(greeting))
+                while True:
+                    try:
+                        message = await websocket.recv()
+                        #print (message)
+                        myCh.showMessage(message)
+                        if myCh.stopCondition():
+                            return
+                    except:
+                        break
+        #loops eternally
 if __name__ == '__main__':
     rws=readWebsock('bitcoin',1)
     asyncio.get_event_loop().run_until_complete(rws.hello())

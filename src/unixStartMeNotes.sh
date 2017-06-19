@@ -5,10 +5,10 @@ export PYTHONPATH=.
 ## nginx -s reload => use if changes made to ngins config.
 ## kill -s SIGQUIT <all uwsgi pids) => quit old uwsgi (Note: uwsgi automatically runs Python app
 ## nohup uwsgi --ini ./src/satori_uwsgi.ini & => starts uwsgi (and that starts the python/flask app server)
-## nohup python3.6 src/chToRedis.py & => start the redis feeder
+## nohup python3.6 src/chToRedisAsync.py &  OR nohup python3.6 src/chToRedis.py=> start the redis feeder
 ## Also make sure that redis is running (nohup redis-server &)
-## uwsgi has been install as a system service (systemd) -- not yet..?
-## sudo service satori start
+## uwsgi has been install as a system service (systemd) as satori
+## sudo service satori start #start the uwsgi
 ##
 
 #########Running instruction on local ##############

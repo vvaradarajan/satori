@@ -11,6 +11,8 @@ import time
 import redis
 import asyncio
 import threading
+import logging
+import os
 class timerForSlotShift ():
 #at specified time interval shifts slots (should lock slots while shifting..not done yet)
     def __init__(self,slotShiftInterval,refreshInterval,totalTime):
@@ -43,7 +45,7 @@ class timerForSlotShift ():
         #urlString = endpoint + '?appkey='+appkey
         time.sleep(self.sleepInterval)
         self.timeLeft -=self.sleepInterval
-        print('slotShiftState = ',str(self.slotShiftState), '; sleepInterval=',self.sleepInterval)
+        #print('slotShiftState = ',str(self.slotShiftState), '; sleepInterval=',self.sleepInterval)
         if (self.slotShiftState):
             for channel in cfg['active']:
                 engine=cfg['engines'][channel]
@@ -65,6 +67,10 @@ def loop_in_backgroundThread(loop):
     asyncio.set_event_loop(loop) #set this thread's event loop
     loop.run_forever()
 if __name__ == '__main__':
+    logfileNM = '/tmp/chToRedis.log' if (os.name != 'nt') else 'c:/junk/chToRedis.log'
+    logging.basicConfig(filename=logfileNM, level=os.environ.get("LOGLEVEL", "INFO"))
+    log = logging.getLogger(__name__)
+    log.info("Starting Satori chToRedis")
     #start the threads for websocket read and timer
     rwsArr=[]
     loop = asyncio.get_event_loop()
@@ -72,7 +78,7 @@ if __name__ == '__main__':
         rws=readWebsock(chNM,cfg['settings']['noOfMsgs'])
         rwsArr.append(rws)
         #append each task to event loop
-        print('Task to read channel: '+ chNM+' created and put in event loop')
+        log.info('Task to read channel: '+ chNM+' created and put in event loop')
         task=  loop.create_task(rws.hello())
     #run the event loop in the background (the loop.run_forever blocks!)
     threading.Thread(target=loop_in_backgroundThread, args=(loop,)).start()
