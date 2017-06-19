@@ -63,7 +63,9 @@ def getSlotsJson():
     return json.dumps(chartDataArr)
 
 if __name__ == '__main__':
-    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+    #log filename is hardcoded depending on os
+    logfileNM = '/tmp/chToRedis.log' if (os.name != 'nt') else 'c:/junk/chToRedis.log'
+    logging.basicConfig(filename=logfileNM, level=os.environ.get("LOGLEVEL", "INFO"))
     log = logging.getLogger(__name__)
     log.info("Starting Satori chToRedis")
     #start the threads for websocket read and timer

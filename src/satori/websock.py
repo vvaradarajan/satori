@@ -23,19 +23,26 @@ class readWebsock (threading.Thread):
     async def hello(self,ch):
         #urlString = endpoint + '?appkey='+appkey
         log.info('Connect to : ' + ch.urlString)
+        while True:
+            async with websockets.connect(ch.urlString) as websocket:
+                await websocket.send(json.dumps(ch.pDu))
+                print("> {}".format(ch.pDu))
         
-        async with websockets.connect(ch.urlString) as websocket:
-            await websocket.send(json.dumps(ch.pDu))
-            print("> {}".format(ch.pDu))
-    
-            greeting = await websocket.recv()
-            print("< {}".format(greeting))
-            while True:
-                message = await websocket.recv()
-                #print (message)
-                ch.showMessage(message)
-                if ch.stopCondition():
-                    break
+                greeting = await websocket.recv()
+                if (json.loads(greeting)['action'] != 'rtm/subscribe/ok'):
+                    log.info("< {}".format(greeting))
+                    log.info(json.dumps(ch.pDu))
+                    return #stop reading this channel
+                while True:
+                    try:
+                        message = await websocket.recv()
+                        #print (message)
+                        ch.showMessage(message)
+                        if ch.stopCondition():
+                            return
+                    except:
+                        break
+        #loops eternally            
     def run(self):
         bt=ch(self.chNM,self.maxMsgCount)
         loop = asyncio.new_event_loop()
