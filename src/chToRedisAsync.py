@@ -79,7 +79,8 @@ if __name__ == '__main__':
         rwsArr.append(rws)
         #append each task to event loop
         log.info('Task to read channel: '+ chNM+' created and put in event loop')
-        task=  loop.create_task(rws.hello())
+        #task=  loop.create_task(rws.hello())
+        asyncio.ensure_future(rws.hello())
     #run the event loop in the background (the loop.run_forever blocks!)
     threading.Thread(target=loop_in_backgroundThread, args=(loop,)).start()
     print('Running all Tasks in event loop')
