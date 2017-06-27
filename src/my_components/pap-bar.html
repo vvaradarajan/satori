@@ -154,26 +154,25 @@ Polymer({
 		var chartHtml=''
 		var colors=["#389090", "#f47e7d", "#85d045", "#fb8335", "#81c0c5"]
 		var settings = await gb.ajaxGetPromise(this.settingsUrl); //note requires the gb (global object or common code)
-		if (this.settingsUrl.endsWith("satori")) {
-			//satori specific settings
-			for (var i=0;i<settings.noOfPanelCharts;i++) {
-				
-				//apply mixins
-				var chartMixins=settings.chartMixins[i]
-				//set default values for unspecified options
-				if (!chartMixins.chartType) chartMixins.chartType='bar';
-				if (!chartMixins.Title) chartMixins.Title="Some graph title"
-				if (!chartMixins.haxis_title) chartMixins.haxis_title='count';
-				chartHtml = chartHtml + '<google-chart class="chart'+i+'"  style="float:left;"'
-				chartHtml +=' type="'+chartMixins.chartType+'"'
-				chartHtml += ', options=\'{"title": "' + chartMixins.Title+'","colors": ["'+colors[i % 5]+'"],"hAxis": {"title":"'
-					+ chartMixins.haxis_title+'", "minValue": 0}}\''
-				+', data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
-				+'	</google-chart>\n'
-			}
-			chartPanelDiv.innerHTML =chartHtml;
-			this.contentProvider.refreshInterval=settings.refreshinterval;
+		//chart settings
+		for (var i=0;i<settings.noOfPanelCharts;i++) {
+			
+			//apply mixins
+			var chartMixins=settings.chartMixins[i]
+			//set default values for unspecified options
+			if (!chartMixins.chartType) chartMixins.chartType='bar';
+			if (!chartMixins.Title) chartMixins.Title="Some graph title"
+			if (!chartMixins.haxis_title) chartMixins.haxis_title='count';
+			if (!chartMixins.colors) chartMixins.colors=[colors[i % 5]];
+			chartHtml = chartHtml + '<google-chart id="'+chartMixins.id +'" class="chart'+i+'"  style="float:left;"'
+			chartHtml +=' type="'+chartMixins.chartType+'"'
+			chartHtml += ', options=\'{"title": "' + chartMixins.Title+'","colors":'+JSON.stringify(chartMixins.colors)+',"hAxis": {"title":"'
+				+ chartMixins.haxis_title+'", "minValue": 0}}\''
+			+', data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
+			+'	</google-chart>\n'
 		}
+		chartPanelDiv.innerHTML =chartHtml;
+		this.contentProvider.refreshInterval=settings.refreshinterval;
 		//common settings
 		this.querySelector('div[main-title]').innerHTML=settings['main-title'];
 		this.menuitems = settings['menuitems'];
@@ -262,11 +261,23 @@ Polymer({
 					
 				} else if (this.menuItem == 'ChartPanel') {
 					//process chart => the returned value is data for the chart
-					var noOfCharts = domRef.querySelectorAll('div#content>div.show'+this.menuItem+'>google-chart').length;
-					for (var i=0;i<noOfCharts;i++) {
-					   var gc = domRef.querySelector('div#content>div.show'+this.menuItem+'>google-chart.chart'+i);
-					   gc.data= nc[i].data;
-					};
+// 					var charts = domRef.querySelectorAll('div#content>div.show'+this.menuItem+'>google-chart');
+// 					var noOfCharts = nc.length;
+// 					for (var i=0;i<noOfCharts;i++ ) {
+// 						var chart = domRef.querySelectorAll('div#content>div.show'+this.menuItem+'>google-chart#'+nc[i][]);
+// 					}
+					ChartPanelNodeRef = domRef.querySelector('div#content>div.show'+this.menuItem);
+					nc.forEach(
+						   function (row) {
+							   var c=this.querySelector('#'+Object.keys(row)[0]);
+							   c.data = row[c.id].data
+						   }.bind(ChartPanelNodeRef)		
+						);
+// 					var noOfCharts = domRef.querySelectorAll('div#content>div.show'+this.menuItem+'>google-chart').length;
+// 					for (var i=0;i<noOfCharts;i++) {
+// 					   var gc = domRef.querySelector('div#content>div.show'+this.menuItem+'>google-chart.chart'+i);
+// 					   gc.data= nc[i].data;
+// 					};
 				} else if (this.menuItem == 'PowerBattery') {
 					//process the math on this page after putting it into the dom
 					var mathDoc = domRef.querySelector('div#content>div.show'+this.menuItem);

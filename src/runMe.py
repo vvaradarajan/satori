@@ -9,14 +9,15 @@
 ## nohup python3.6 src/chToRedis.py & => start the redis feeder
 ## Also make sure that redis is running (nohup redis-server &)
 from flask import Flask,get_template_attribute,send_from_directory
-from src.satori.websock import readWebsock
+#from src.satori.websock import readWebsock
 #from src.satori.bitcoin2Old import meetup
-from src.satori.channels.ch import ch, timerForSlotShift
+#from src.satori.channels.ch import ch, timerForSlotShift
 import json
 import markdown
 from pprint import pprint
-from src.cfg import cfg
-from src.cfg_Math import cfg_Math
+from src.cfg_satori import cfg_satori
+from src.cfg_math import cfg_math
+from src.cfg_power import cfg_power
 import os
 import redis
 import logging
@@ -36,7 +37,9 @@ class myFlask(Flask):
 app = myFlask(__name__,static_url_path='/static')
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
 APP_STATIC = os.path.join(APP_ROOT, 'static')
-r = redis.Redis(host='localhost', port=6379, db=0)
+redisMem = redis.Redis(host='localhost', port=6379, db=0)
+APP_ROLE='power'
+cfg = eval('cfg_'+APP_ROLE)
 @app.route("/a")
 def hello():
     return "Hello World!"
@@ -64,34 +67,43 @@ def send_settingsData(setting):
         js['noOfPanelCharts']=len(cfg['active'])
         chartMixins=[]
         for c in cfg['active']:
-            chartMixins.append(cfg['chDetails'][c]['charts']['msgRate']['mixin'])
+            mixin=cfg['chDetails'][c]['charts']['msgRate']['mixin']
+            mixin['id']=c
+            chartMixins.append(mixin)
         js['chartMixins']=chartMixins
         return json.dumps(js)
+    if setting=='power':
+        return redisMem.get('settings').decode('utf-8')
+#         js=cfg['settings']
+#         js['noOfPanelCharts']=len(cfg_power['active'])
+#         chartMixins=[]
+#         for c in cfg['active']:
+#             mixin=cfg['chDetails'][c]['charts']['msgRate']['mixin']
+#             mixin['id']=c
+#             chartMixins.append(mixin)
+#         js['chartMixins']=chartMixins
+#         return json.dumps(js)
     if setting=='math':
-        js=cfg_Math['settings'];
+        js=cfg_math['settings'];
         return json.dumps(js)
     if setting == 'noOfPanelCharts':
-        return str(len(cfg['active']))
+        return str(len(cfg_satori['active']))
     return "0"
 
 @app.route('/satori/<path:menuItem>')
 def send_satori(menuItem):
+    print('menuItem is: '+menuItem)
     if menuItem=='Chart':
         chNM=cfg['active'][0]
         chartClass=cfg['engines'][chNM]
         pprint(chartClass.slots.getSlotsJson(chNM))
         return json.dumps(chartClass.slots.getSlotsJson(chNM))
-    print('menuItem is: '+menuItem)
-    if menuItem=='ChartPanel':
-#         chartDataArr=[]
-#         pprint(cfg['engines'])
-#         for chNM in cfg['active']:
-#             chartDataArr.append(cfg['engines'][chNM].getSlotsJson(chNM))
-#         return json.dumps(chartDataArr)
-        return(str(r.get('chartPanel'),'utf-8'))
+    elif menuItem=='ChartPanel':
+        #return the data from redis
+        return(str(redisMem.get('chartPanel'),'utf-8'))
 
 
-    if menuItem in ['Algorithm','Blog','PowerBattery']:
+    elif menuItem in ['Algorithm','Blog','PowerBattery']:
         if (menuItem=='Algorithm'):
             fileNM='Algorithm.md'
         else:
@@ -107,12 +119,15 @@ def send_satori(menuItem):
         defMsg={}
         defMsg['Message']=html
         return json.dumps(defMsg)
-            
+    elif menuItem == 'ReloadData':
+        redisMem.set('reloadData','T')
+        return "Data Loaded"
         #return '[["Time", "count"], ["0", 5], ["1", 6], ["2", 7]]'
     #All others return a default message
-    defMsg={}
-    defMsg['Message']='Content development in Progress for {0}.  Try ChartPanel instead..'.format(menuItem)
-    return json.dumps(defMsg)
+    else:
+        defMsg={}
+        defMsg['Message']='Content development in Progress for {0}.  Try ChartPanel instead..'.format(menuItem)
+        return json.dumps(defMsg)
 
 if __name__ == "__main__":
     #ch.loadChClassesInCfg()   

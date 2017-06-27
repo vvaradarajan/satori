@@ -8,7 +8,7 @@ from src.satori.channels.default import default
 import sys
 import inspect
 from pprint import pprint
-from src.cfg import cfg
+from src.runMe import cfg
 from asyncio.tasks import sleep
 class ch:
     chClassNamePrefix='src.satori.channels' #location of channel processing classes

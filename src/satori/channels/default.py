@@ -13,7 +13,7 @@ import unicodedata
 import time
 import json
 from _tracemalloc import stop
-from src.cfg import cfg
+from src.runMe import cfg
 class slotter:
     def __init__(self,noOfSlots):
         self.noOfSlots=noOfSlots
@@ -68,7 +68,7 @@ class slotter:
         return chartJson
     def printSlots(self):
         pprint (self.slots)
-
+import asyncio
 class default:
     def __init__(self,maxMsgCount):
         print ('In init of default')

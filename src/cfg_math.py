@@ -3,7 +3,7 @@ Created on May 21, 2017
 
 @author: acer
 '''
-cfg_Math={
+cfg_math={
      'settings':{ 'main-title':'Math Analysis..'
                   ,'menuitems':['PowerBattery','Other']
                   ,'defaultMenuItem':'PowerBattery'}

@@ -6,7 +6,7 @@ Created on May 28, 2017
 from src.satori.websockAsync import readWebsock
 import json
 from pprint import pprint
-from src.cfg import cfg
+from src.runMe import cfg
 import time
 import redis
 import asyncio
@@ -60,7 +60,12 @@ class timerForSlotShift ():
 def getSlotsJson():
     chartDataArr=[]
     for chNM in cfg['active']:
-            chartDataArr.append(cfg['engines'][chNM].getSlotsJson(chNM))
+        chObj = {}
+#        dataArr=[]
+#        dataArr.append(cfg['engines'][chNM].getSlotsJson(chNM))
+        #print(dataArr)
+        chObj[chNM]=cfg['engines'][chNM].getSlotsJson(chNM)
+        chartDataArr.append(chObj)
     return json.dumps(chartDataArr)
 
 def loop_in_backgroundThread(loop):

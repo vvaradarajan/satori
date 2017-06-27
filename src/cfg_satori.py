@@ -3,7 +3,7 @@ Created on May 21, 2017
 
 @author: acer
 '''
-cfg={'active':['exchange','Flying-A320s','meetup','github','bitcoin','Bart'] #['exchange','Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
+cfg_satori={'active':['exchange','Flying-A320s','meetup','github','bitcoin','Bart'] #['exchange','Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
      ,'settings':{'refreshInterval':6000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':72000
                   ,'main-title':'Satori Channel traffic rates..'
                   ,'menuitems':['Demo','Chart','ChartPanel','Algorithm','Blog','About']

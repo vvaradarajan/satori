@@ -11,7 +11,7 @@ import unicodedata
 import sys
 import traceback
 import time
-from src.cfg import cfg
+from src.runMe import cfg
 from pprint import pprint
 class bitcoin(default):
     def __init__(self,noOfSlots):
