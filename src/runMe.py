@@ -73,16 +73,8 @@ def send_settingsData(setting):
         js['chartMixins']=chartMixins
         return json.dumps(js)
     if setting=='power':
+        #The settings comes from the config. (General seperation of web-server from subject code)
         return redisMem.get('settings').decode('utf-8')
-#         js=cfg['settings']
-#         js['noOfPanelCharts']=len(cfg_power['active'])
-#         chartMixins=[]
-#         for c in cfg['active']:
-#             mixin=cfg['chDetails'][c]['charts']['msgRate']['mixin']
-#             mixin['id']=c
-#             chartMixins.append(mixin)
-#         js['chartMixins']=chartMixins
-#         return json.dumps(js)
     if setting=='math':
         js=cfg_math['settings'];
         return json.dumps(js)

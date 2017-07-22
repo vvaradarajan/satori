@@ -2,7 +2,7 @@
 Created on May 28, 2017
 
 @author: Vasan
-@note: This is the main program that generates data for a chart array:
+@note: This is the main program that generates data for a chart array
 Overview:
 f(x)
 For each chart f(x) is implemented elsewhere (the class is dynamically imported from the chart array).
@@ -30,6 +30,7 @@ from pprint import pprint
 from src.satori.utils import load_class_from_name
 from src.satori.utils import transformArrayToScale
 import redis
+import sys
 class chart:
     #init create an dict with channelNames [[asyncClassNM,x
     def __init__(self,cfg):
@@ -37,7 +38,18 @@ class chart:
         self.classPrefix = 'src.satori.batteryChannels.'
         self.chartGroups = cfg['chartGroupings']
         asyncLevels={}
-        for ch in cfg['active']:
+        #from the showChart determine the active metrics to be calculated
+        #Currently this is done by level (all lower levels must be active..)
+        for x in cfg['chDetails']:
+            if not 'asyncLevel' in cfg['chDetails'][x]:
+                cfg['chDetails'][x]['asyncLevel']=0 
+        maxLevel = max([cfg['chDetails'][x]['asyncLevel']  for x in cfg['showCharts']])
+        print('maxLevel=',maxLevel)
+        activeCharts=[x for x in cfg['chDetails'] if cfg['chDetails'][x]['asyncLevel'] < maxLevel ]
+        activeCharts.extend([x for x in cfg['showCharts'] if not x in activeCharts])
+        self.activeCharts=activeCharts
+        print(self.activeCharts)
+        for ch in self.activeCharts:
             self.asyncCallList[ch]={}
             #put in callListOrder (async procs will be called by the levels - assume that active list is consistent (i.e. required levels are there)
             asyncLevel = str(0 if not ('asyncLevel' in cfg['chDetails'][ch]) else cfg['chDetails'][ch]['asyncLevel'])
@@ -53,17 +65,22 @@ class chart:
             if 'properties' in cfg['chDetails'][ch]:
                 for key,value in cfg['chDetails'][ch]['properties'].items():
                     setattr(self.asyncCallList[ch]['processEngine'],key,value)
-        self.asyncLevels=asyncLevels
-        pprint("asyncLevels:")
-        pprint(asyncLevels)    
+            #set pointer to all engines as otherData
+            setattr(self.asyncCallList[ch]['processEngine'],'otherData',self)
+            print('activeCharts=',ch,self.asyncCallList[ch]['processEngine'].otherData.classPrefix )
+            
+        self.asyncLevels=asyncLevels    
         self.processDynamicDataFromFile()
+        #process initExplicit after all objects have been initialized
+        for ch in self.asyncCallList.keys():
+            processEngine = self.asyncCallList[ch]['processEngine']
+            if hasattr(processEngine,'initExplicit'):
+                processEngine.initExplicit()
         self.storeSettingsInRedis() #settings for the webserver
     
     def storeSettingsInRedis(self):
         js=cfg['settings']
-        print(self.asyncCallList.keys())
-        singleList = list(filter(self.isInGroup, self.asyncCallList.keys())) #clone the active
-        pprint(singleList)
+        singleList = list(filter(self.isInGroup, cfg['showCharts'])) #clone the active
         #js['noOfPanelCharts']=len(cfg['active'])
         js['noOfPanelCharts']=len(singleList) + len(self.chartGroups)
         chartMixins=[]
@@ -97,10 +114,7 @@ class chart:
         for chNM in fileContent.keys():
             if 'properties' in fileContent[chNM]:
                 for key,value in fileContent[chNM]['properties'].items():
-                    if key=='otherData':
-                        setattr(self.asyncCallList[chNM]['processEngine'],key,self)
-                    else:
-                        setattr(self.asyncCallList[chNM]['processEngine'],key,value)
+                    setattr(self.asyncCallList[chNM]['processEngine'],key,value)
             #set the tier values for tieredPrice
             if 'tier' in chNM:
                 self.asyncCallList[chNM]['processEngine'].setStateValues()
@@ -114,24 +128,38 @@ class chart:
         #generate data by async level (level indicates that all async's lower should finish before higher levels can be called)
         for chNM in self.asyncCallList.keys():
             self.asyncCallList[chNM]['data']=[] #clear out old data (#graph data will be put here as an array of x,y points)
-        for level in sorted(self.asyncLevels):
-            chnlsByLevel=self.asyncLevels[level]
-            pprint(chnlsByLevel)
-            for i in range(24):
+        pprint("AsyncLevels sorted")
+        pprint(sorted(self.asyncLevels))
+        for i in range(24):
+            for level in sorted(self.asyncLevels):
+                chnlsByLevel=self.asyncLevels[level]
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop) # <----
                 self.addToAsyncLoop(chnlsByLevel,loop,i)
                 pending = asyncio.Task.all_tasks()
                 Results = loop.run_until_complete(asyncio.gather(*pending))
                 loop.close()
-        for chNM in self.asyncCallList.keys():
-            pprint(chNM)
-            pprint(self.asyncCallList[chNM]['processEngine'].fcnData)
+#         for chNM in self.asyncCallList.keys():
+#             pprint(chNM)
+#             pprint(self.asyncCallList[chNM]['processEngine'].fcnData)
         allChartData = self.getSlotsJson()
         print('allChartData : ')
         pprint(allChartData)
         #put into redis
         redisMem.set('chartPanel',json.dumps(allChartData))
+        
+    def generateSummary(self):
+        summary={}
+        #Summary from each chart
+        for chNM in self.asyncCallList:
+            engine = self.asyncCallList[chNM]['processEngine']
+            try:
+                summary[chNM] = engine.getSummary()
+            except:
+                pass
+        #Overall Summary
+        redisMem.set('chartSummary',json.dumps(summary))
+        return summary
     
     def isInGroup(self,chNM):
             for groups in self.chartGroups:
@@ -143,8 +171,7 @@ class chart:
         retValArr=[] #Array of chartDataObjects - each object has key of chart and an object describing the data
         #create sets of grouped charts
         #first create the non-grouped charts
-
-        singleList = list(filter(self.isInGroup, self.asyncCallList.keys())) #clone the active
+        singleList = list(filter(self.isInGroup, cfg['showCharts'])) #clone only the charts to be shown
         
         for chNM in singleList: #self.asyncCallList.keys():
             retVal={}
@@ -159,14 +186,15 @@ class chart:
         for group in self.chartGroups:
             groupId = group['id']
             cols=['Time']
-            cols.extend([chNM for chNM in group['charts']])
-            print(groupId,': cols = ',cols,'length=',len(group['charts']))
+            groupChartsToShow = [x for x in group['charts'] if x in cfg['showCharts']]
+            cols.extend([chNM for chNM in groupChartsToShow])
+            #print(groupId,': cols = ',cols,'length=',len(group['charts']))
             retVal={}
             retVal[groupId]={}
             retVal[groupId]['data']=[cols]
-            dataTbl = [[x[0]] for x in self.asyncCallList[group['charts'][0]]['processEngine'].fcnData]
+            dataTbl = [[x[0]] for x in self.asyncCallList[groupChartsToShow[0]]['processEngine'].fcnData]
             for i in range(len(dataTbl)):
-                for chNM in group['charts']:
+                for chNM in groupChartsToShow:
                     dataTbl[i].append((self.asyncCallList[chNM]['processEngine'].fcnData)[i][1])
             retVal[groupId]['data'].extend(dataTbl)
             retValArr.append(retVal) 
@@ -183,6 +211,7 @@ if __name__ == '__main__':
     noOfCharts = len(cfg['chDetails'])
     print('No of Charts= '+str(noOfCharts))
     chnls.generateChartData()
+    print(chnls.generateSummary())
     #Loop checking if reload is requested
     while True:
         time.sleep(2)

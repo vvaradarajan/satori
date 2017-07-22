@@ -4,6 +4,7 @@
   <title>paper-card demo</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="Cache-control" content="no-cache">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
 <!--   <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script> -->
@@ -30,6 +31,23 @@ google-chart {
 </style>
 <template>
 <style>
+.container {
+    overflow:auto;
+}
+.sidebyside {
+    float:left; 
+    width:100px; 
+    height:100px; 
+    border-style:solid; 
+    margin:5px;
+}
+.belowdiv {
+    width:300px; 
+    height:100px; 
+    border-style:solid; 
+    margin:5px;
+}
+
       paper-menu {
           width: 100px;background-color: #00897B;
         }
@@ -79,9 +97,14 @@ google-chart {
 <!--     <paper-item id="Blog">Blog</paper-item> -->
 <!--     <paper-item id="About">About</paper-item> -->
  </app-drawer>
- <div id="content">
+ <div id="content" class="container">
     <div class="showChartPanel">
+		<div class="sidebyside">
+		Karamba
+		</div>
+    	<div class="chartContainer" class="sidebyside">
 <!--    The Google chart template is created dynamically here based on chart information -->
+   	</div>
    </div>
    <div class="showChart">
    	<google-chart
@@ -150,10 +173,12 @@ Polymer({
 				});
 		this.setContentSource(this.defaultContentSource);
 		//insert google chart html into div
-		var chartPanelDiv = this.querySelector('div.showChartPanel')
+		var chartPanelDiv = this.querySelector('div.chartContainer')
 		var chartHtml=''
 		var colors=["#389090", "#f47e7d", "#85d045", "#fb8335", "#81c0c5"]
 		var settings = await gb.ajaxGetPromise(this.settingsUrl); //note requires the gb (global object or common code)
+		var sWidth = document.getElementById("content").clientWidth; //window.screen.availWidth
+		var sHeight = document.getElementById("content").clientHeight; 
 		//chart settings
 		for (var i=0;i<settings.noOfPanelCharts;i++) {
 			
@@ -166,9 +191,20 @@ Polymer({
 			if (!chartMixins.colors) chartMixins.colors=[colors[i % 5]];
 			chartHtml = chartHtml + '<google-chart id="'+chartMixins.id +'" class="chart'+i+'"  style="float:left;"'
 			chartHtml +=' type="'+chartMixins.chartType+'"'
-			chartHtml += ', options=\'{"title": "' + chartMixins.Title+'","colors":'+JSON.stringify(chartMixins.colors)+',"hAxis": {"title":"'
-				+ chartMixins.haxis_title+'", "minValue": 0}}\''
-			+', data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
+			var chartOptions = {}
+			chartOptions.title=chartMixins.Title;
+			chartOptions.colors=chartMixins.colors
+			chartOptions.hAxis={"title":chartMixins.haxis_title,"minValue": 0}
+			//size the charts
+			if (settings.noOfPanelCharts == 1) {
+				chartOptions.width=sWidth * 0.9
+				chartOptions.height=sHeight * 0.7
+			} else {
+				chartOptions.width=400
+				chartOptions.height=300				
+			};
+			chartHtml += ', options=\''+JSON.stringify(chartOptions)+'\''
+			//chartHtml += ', data=\'[["Month", "Days"], ["Jan", 31], ["Feb", 28], ["Mar", 31]]\'>'
 			+'	</google-chart>\n'
 		}
 		chartPanelDiv.innerHTML =chartHtml;

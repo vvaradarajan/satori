@@ -109,3 +109,35 @@ These constraints also have to be applied when maximizing Equ 4.
 \`int_0^T Pb\ dt = -S\`  (i.e. over a period, the battery must charge/discharge equal to the Solar power input).  The rest of the derivations as similar to examples 1-4.  
 ...
 and e < C for all t.
+
+# A numerical and heuristic approach
+
+The number of variables and constraints are numerous when solar power, battery charging and discharging characteristics are included. Additional practical considerations such as power efficiency of batteries, multiple tiers of pricing add to the complexity and an analytical solution is difficult.
+
+A numerical approach with heuristics is the method suggested and works as follows:
+
+1. **Heuristic** : Charge the battery when tiers are low, and discharge when high.
+2. **Numerical Evaluation**: Each of the variables is evaluated each hour over a natural cycle of 24 hrs. The variables are categorized as 'independent' (iV's) and 'dependent'(dV's) based on their dependency on other variables. Ex: Solar power is independent and can be determined over the cycle of 24 hrs. Battery Charge is dependent on battery current. Battery current is dependent and is a function of grid power, consumed power and solar power.
+
+Using point 2, the iV's are recorded for each hour. Then the dV's are computed from the iV data for each hour. Where the dV's are dependent on other dV's and order of computing the dV's is followed. Where there is a 'circular' dependency (Battery Current is dependent on Battery Charge, which depends on Battery Current) time is used to order the computation - i.e. The next value of the Battery Current is dependent on the current value of Battery Charge.
+
+Using the heuristic (point 1 above), states are determined (i.e. low price state, high price state), which are used in the computations.
+
+##Optimization space:
+The main variable to be optimized is the battery current with respect to cost of power consumed. Here again some heuristic's are applied:
+a. Battery charge should be sufficiently high to cover power requirement during the high price state. If this is not possible, then the Battery charge should be max at the beginning of the high price state.
+b. Battery should not charge while in the high price state.
+c. The Battery charge at the beginning of the cycle should equal the Battery charge at the end of the cycle.
+
+There will be many solutions (all of which should have the minimum cost). These solutions are determined and expected to be a 'range' of beginning battery charge values.
+
+##Solution Technology and Algorithm:
+
+Python with charts is the technologies used. The charts is a critical component to validate/present the variable conditions and the optimal solution.
+
+The Algorithm is to use time-series arrays (time = 0 to 23 hrs). These arrays are pre-filled for the iV's (independent variables). The dV's are then computed in order of the dependencies. A pre-fill of the 0th time period is required to handle 'circular' dependencies as mentioned above. Here that is the initial battery charge.
+In order to apply the optimization heuristic, some values based on intermediate iV's and dV's need to be computed prior to computation of some dV's. Here the power requirement (consumption - solar) during the 'high price state' has to be computed. This is computed by summing (consumption-solar) over the high price state. This establishes the minimum battery charge value at the time the High Price state starts. Similar method is used to establish the minimum battery charge at the initial period. Therefore the battery charge levels are determined at a few time periods. In the period in-between the battery current (charged/discharge) is determined in a manner to conform to these values.
+
+Each computation will also follow set rules such as : Battery Charge current < Max permitted, Battery Charge > Min permitted etc.
+
+The solution Algorithm also provides for easy alteration of the iV values and battery properties (i.e. it is 'data-driven' as these values/properties are kept as datafile, for easy editing)
