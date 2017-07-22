@@ -175,7 +175,7 @@ Polymer({
 		//insert google chart html into div
 		var chartPanelDiv = this.querySelector('div.chartContainer')
 		var chartHtml=''
-		var colors=["#389090", "#f47e7d", "#85d045", "#fb8335", "#81c0c5"]
+		var colors=["#FF6600", "#66FF00", "#00CCFF", "#FF00FF", "#FFCC00","#333333","#FF3399","#3333FF"]
 		var settings = await gb.ajaxGetPromise(this.settingsUrl); //note requires the gb (global object or common code)
 		var sWidth = document.getElementById("content").clientWidth; //window.screen.availWidth
 		var sHeight = document.getElementById("content").clientHeight; 
@@ -188,7 +188,7 @@ Polymer({
 			if (!chartMixins.chartType) chartMixins.chartType='bar';
 			if (!chartMixins.Title) chartMixins.Title="Some graph title"
 			if (!chartMixins.haxis_title) chartMixins.haxis_title='count';
-			if (!chartMixins.colors) chartMixins.colors=[colors[i % 5]];
+			if (!chartMixins.colors) chartMixins.colors=[colors[i % 8]];
 			chartHtml = chartHtml + '<google-chart id="'+chartMixins.id +'" class="chart'+i+'"  style="float:left;"'
 			chartHtml +=' type="'+chartMixins.chartType+'"'
 			var chartOptions = {}

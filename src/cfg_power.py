@@ -3,7 +3,7 @@ Created on May 21, 2017
 
 @author: acer
 '''
-cfg_power={'showCharts':['solar','consumed','battery','batteryChg','cost']
+cfg_power={'showCharts':['solar','consumed','batteryChg','battery']
            #['solar','consumed','netPwrReqd','tieredPrice','cost','battery','batteryChg'] 
            #['exchange','Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
      ,'xAxisIntervalInMins':60 #implemented only hourly now

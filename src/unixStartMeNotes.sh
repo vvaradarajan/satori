@@ -18,7 +18,7 @@ export PYTHONPATH=.
 ##
 
 #########Running instruction on local ##############
-1. From Eclipse: run the runMe.py
+1. From Eclipse: run the runMe.py yj
 2. From the command prompt: 
    cd C:\vasan\workspaceDecisions\satori1 (where project is)
    set PYTHONPATH=.
@@ -28,3 +28,12 @@ export PYTHONPATH=.
 Using Threading (chToRedis.py, websock.py)
 Using asyncio (chToRedisAsync.py, websockAsync.py)
 The asyncio is simpler!
+
+####################### configuration details ########################
+cfg_power.py => has the chart details (meta data for charts)
+batteryChannels/data/power.txt => The chart inputs including battery details
+
+####################### Starting it on windows #######################
+1. From the command line run the 'chartGen.py' -> This is the core. It calculates the chart data and puts the chart data on redis
+2. From eclipse run the runMe.py -> The web server that gets the data from redis and displays it on the page.
+3. Note: Redis has been installed as a windows service and will be running all the time.
