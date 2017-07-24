@@ -90,6 +90,7 @@ google-chart {
   	<template is="dom-repeat" items="{{menuitems}}">
 		<paper-item id="{{item}}">{{item}}</paper-item>
     </template>
+
 <!--     <paper-item id="Demo">Demo</paper-item> -->
 <!--     <paper-item id="Chart">Chart</paper-item> -->
 <!--     <paper-item id="ChartPanel">ChartPanel</paper-item> -->
@@ -100,7 +101,9 @@ google-chart {
  <div id="content" class="container">
     <div class="showChartPanel">
 		<div class="sidebyside">
-		Karamba
+		  	<template is="dom-repeat" items="{{chartItems}}">
+				<paper-checkbox id="{{item}}" on-change="chartsDisplayChanged" checked>{{item}}</paper-checkbox>
+    			</template>
 		</div>
     	<div class="chartContainer" class="sidebyside">
 <!--    The Google chart template is created dynamically here based on chart information -->
@@ -180,6 +183,7 @@ Polymer({
 		var sWidth = document.getElementById("content").clientWidth; //window.screen.availWidth
 		var sHeight = document.getElementById("content").clientHeight; 
 		//chart settings
+		this.chartItems = settings.showCharts; //like: ['solar','consumed','batteryChg','battery']
 		for (var i=0;i<settings.noOfPanelCharts;i++) {
 			
 			//apply mixins
@@ -253,8 +257,7 @@ Polymer({
 			this.intervalTimer = setInterval(function(){ this1.show(domRef,contentSource); }, timeInterval);
 		}
 		,refreshTable: {
-			'Chart': 3000
-			,'ChartPanel':6000
+			'Chart': 3000 //refresh only the chart
 		}
 		,isRefresh(menuItem,domRef,contentSource) {
 			//checks: 1. if this is just a refresh => continue
@@ -272,6 +275,7 @@ Polymer({
 					this.periodicRefresh(domRef,contentSource,this.refreshTable[item]);
 					return;
 				}
+				
 			}
 		}
 		,show: async function(domRef,contentSource) {
@@ -296,24 +300,16 @@ Polymer({
 						//JSON.parse('[["Month", "Days"], ["Jyn", 31], ["Feb", 28], ["Mar", 31]]')
 					
 				} else if (this.menuItem == 'ChartPanel') {
-					//process chart => the returned value is data for the chart
-// 					var charts = domRef.querySelectorAll('div#content>div.show'+this.menuItem+'>google-chart');
-// 					var noOfCharts = nc.length;
-// 					for (var i=0;i<noOfCharts;i++ ) {
-// 						var chart = domRef.querySelectorAll('div#content>div.show'+this.menuItem+'>google-chart#'+nc[i][]);
-// 					}
+					//process chartpanel => the returned value is a datarray for the charts in the panel
 					ChartPanelNodeRef = domRef.querySelector('div#content>div.show'+this.menuItem);
+					this.origNc=JSON.stringify(nc);
 					nc.forEach(
 						   function (row) {
-							   var c=this.querySelector('#'+Object.keys(row)[0]);
+							   var c=this.querySelector('#'+Object.keys(row)[0]); //The chart id is used to
 							   c.data = row[c.id].data
 						   }.bind(ChartPanelNodeRef)		
 						);
-// 					var noOfCharts = domRef.querySelectorAll('div#content>div.show'+this.menuItem+'>google-chart').length;
-// 					for (var i=0;i<noOfCharts;i++) {
-// 					   var gc = domRef.querySelector('div#content>div.show'+this.menuItem+'>google-chart.chart'+i);
-// 					   gc.data= nc[i].data;
-// 					};
+
 				} else if (this.menuItem == 'PowerBattery') {
 					//process the math on this page after putting it into the dom
 					var mathDoc = domRef.querySelector('div#content>div.show'+this.menuItem);
@@ -330,6 +326,46 @@ Polymer({
 			this.previousMenuItem=this.menuItem;
 			console.log("This is a demo");
 		}
+	} //end of contentProvider object
+   ,chartsDisplayChanged : function(event){
+	        console.log(event.target.id + '='+event.target.value);
+	        console.log(this.origDataArray);
+	        //create any array of the unchecked lines (These have to be removed from the chart)
+	        var uncheckedLines=[]
+	        event.target.parentElement.querySelectorAll('paper-checkbox').forEach(
+	        		function(chkBox) {
+	        			if (!chkBox.checked) uncheckedLines.push(chkBox.id);
+	        		}
+	          )
+	        //The data is in this.contentProvider.origNc as a JSON string
+	        var nc = JSON.parse(this.contentProvider.origNc); //get the copy of the complete data
+	        //Go thru the data for the first chart (chartpanel has only one chart now!) and keep only the ones checked
+	        var ChartPanelNodeRef = this.querySelector('div#content>div.show'+this.contentProvider.menuItem);
+			nc.forEach(
+					   function (row) {
+						   var c=this.querySelector('#'+Object.keys(row)[0]); //The chart id is used to hold the array of data for each graph
+						   //The row structure is an 2D array (array of arrays). 
+						   //The 0th column is the x-axis (i.e. time). The remaining columns are data for each line.
+						   //The first row is the name of each line.
+						   var dataForLines=row[c.id].data;
+						   //Here a column should be deleted if that line is not to be displayed. 
+						   var lineNames=dataForLines[0].slice(0); //clone the linenames
+						   //find the lines that are unchecked => They should be deleted
+						   lineNames.forEach(
+							 function(ln) {
+								 if (uncheckedLines.includes(ln)) {
+									 //find that column in dataForLines each time, since dataForLines is modified as each column is deleted
+									 var dflLineNames=dataForLines[0].slice(0);
+									 for (var i=1;i<dflLineNames.length;i++) {
+										 if (dflLineNames[i]==ln) {gb.deleteColumnFrom2DTable(dataForLines,i); break;}
+									 	}
+							   }});
+// 						   var colToDelete =1;
+// 						   gb.deleteColumnFrom2DTable(row[c.id].data,colToDelete)
+						   c.data = row[c.id].data; //row[c.id].data
+					   }.bind(ChartPanelNodeRef)		
+					);
+	        
 	}
 });
 </script>

@@ -43,10 +43,10 @@ class chart:
         for x in cfg['chDetails']:
             if not 'asyncLevel' in cfg['chDetails'][x]:
                 cfg['chDetails'][x]['asyncLevel']=0 
-        maxLevel = max([cfg['chDetails'][x]['asyncLevel']  for x in cfg['showCharts']])
+        maxLevel = max([cfg['chDetails'][x]['asyncLevel']  for x in cfg['settings']['showCharts']])
         print('maxLevel=',maxLevel)
         activeCharts=[x for x in cfg['chDetails'] if cfg['chDetails'][x]['asyncLevel'] < maxLevel ]
-        activeCharts.extend([x for x in cfg['showCharts'] if not x in activeCharts])
+        activeCharts.extend([x for x in cfg['settings']['showCharts'] if not x in activeCharts])
         self.activeCharts=activeCharts
         print(self.activeCharts)
         for ch in self.activeCharts:
@@ -80,7 +80,7 @@ class chart:
     
     def storeSettingsInRedis(self):
         js=cfg['settings']
-        singleList = list(filter(self.isInGroup, cfg['showCharts'])) #clone the active
+        singleList = list(filter(self.isInGroup, cfg['settings']['showCharts'])) #clone the active
         #js['noOfPanelCharts']=len(cfg['active'])
         js['noOfPanelCharts']=len(singleList) + len(self.chartGroups)
         chartMixins=[]
@@ -171,7 +171,7 @@ class chart:
         retValArr=[] #Array of chartDataObjects - each object has key of chart and an object describing the data
         #create sets of grouped charts
         #first create the non-grouped charts
-        singleList = list(filter(self.isInGroup, cfg['showCharts'])) #clone only the charts to be shown
+        singleList = list(filter(self.isInGroup, cfg['settings']['showCharts'])) #clone only the charts to be shown
         
         for chNM in singleList: #self.asyncCallList.keys():
             retVal={}
@@ -186,7 +186,7 @@ class chart:
         for group in self.chartGroups:
             groupId = group['id']
             cols=['Time']
-            groupChartsToShow = [x for x in group['charts'] if x in cfg['showCharts']]
+            groupChartsToShow = [x for x in group['charts'] if x in cfg['settings']['showCharts']]
             cols.extend([chNM for chNM in groupChartsToShow])
             #print(groupId,': cols = ',cols,'length=',len(group['charts']))
             retVal={}

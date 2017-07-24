@@ -39,37 +39,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="/my_components/pap-bar.html">
 
 <script>
+//keep some global functions for the page in gb
 var gb={
-		   ajaxGetPromise: function get(url) {
-			   // Return a new promise.
-			   return new Promise(function(resolve, reject) {
-			     // Do the usual XHR stuff
-			     var req = new XMLHttpRequest();
-			     req.open('GET', url);
+	   ajaxGetPromise: function get(url) {
+		   // Return a new promise.
+		   return new Promise(function(resolve, reject) {
+		     // Do the usual XHR stuff
+		     var req = new XMLHttpRequest();
+		     req.open('GET', url);
 
-			     req.onload = function() {
-			       // This is called even on 404 etc
-			       // so check the status
-			       if (req.status == 200) {
-			         // Resolve the promise with the response text (currently JSON response)
-			         resolve(JSON.parse(req.response));
-			       }
-			       else {
-			         // Otherwise reject with the status text
-			         // which will hopefully be a meaningful error
-			         reject(Error(req.statusText));
-			       }
-			     };
+		     req.onload = function() {
+		       // This is called even on 404 etc
+		       // so check the status
+		       if (req.status == 200) {
+		         // Resolve the promise with the response text (currently JSON response)
+		         resolve(JSON.parse(req.response));
+		       }
+		       else {
+		         // Otherwise reject with the status text
+		         // which will hopefully be a meaningful error
+		         reject(Error(req.statusText));
+		       }
+		     };
 
-			     // Handle network errors
-			     req.onerror = function() {
-			       reject(Error("Network Error"));
-			     };
+		     // Handle network errors
+		     req.onerror = function() {
+		       reject(Error("Network Error"));
+		     };
 
-			     // Make the request
-			     req.send();
-			   });
-			 }
+		     // Make the request
+		     req.send();
+		   });
+		 }
+			 
+	,deleteColumnFrom2DTable(tDt,iCol) {
+		tDt.forEach(
+		   function(row) {
+			   row.splice(iCol, 1);
+		   }		
+		)
+	}
 };
 
 

@@ -3,18 +3,19 @@ Created on May 21, 2017
 
 @author: acer
 '''
-cfg_power={'showCharts':['solar','consumed','batteryChg','battery']
-           #['solar','consumed','netPwrReqd','tieredPrice','cost','battery','batteryChg'] 
-           #['exchange','Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
-     ,'xAxisIntervalInMins':60 #implemented only hourly now
+cfg_power={
+      'xAxisIntervalInMins':60 #implemented only hourly now
      ,'chartGroupings':[
          {"id":"pwrSolCon","mixin":{"Title":"Solar,Consumed","colors": ['black', 'red','green'],"chartType":'line',"haxis_title":"Hour 0-23"}
            ,"charts":['solar','consumed','battery','cost','batteryChg','tieredPrice']}
          ] #These charts will be in one
-     ,'settings':{'refreshInterval':60000,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':72000
-                  ,'main-title':'Satori Channel traffic rates..'
+     ,'settings':{'refreshInterval':-1,'noOfMsgs':10000,'slotShiftTimeSecs':10,'totalRunTime':72000
+                  ,'main-title':'Power Analysis Charts..'
                   ,'menuitems':['ReloadData','Chart','ChartPanel','Algorithm','Blog','About']
-                  ,'defaultMenuItem':'ChartPanel'}
+                  ,'defaultMenuItem':'ChartPanel',
+                  'showCharts':['solar','consumed','batteryChg','battery']}
+                   #['solar','consumed','netPwrReqd','tieredPrice','cost','battery','batteryChg'] 
+                   #['exchange','Flying-A320s','meetup','github','bitcoin','Bart','twitter'] #
      ,'chDetails': {
         'solar':{'classNM':'default.solar','properties':{'valCalc':'defined'},
                 "charts":{"msgRate":{
